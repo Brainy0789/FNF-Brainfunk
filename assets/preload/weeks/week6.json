@@ -1,22 +1,27 @@
 {
+	"storyName": "Chapter ????: god's domain",
+	"difficulties": "normal, beatable",
+	"hideFreeplay": false,
+	"weekBackground": "stage",
+	"weekBefore": "weekbambi",
+	"startUnlocked": true,
 	"songs": [
-		["Senpai", "senpai-pixel", [255, 120, 191]],
-		["Roses", "senpai-pixel", [255, 120, 191]],
-		["Thorns", "spirit-pixel", [255, 120, 191]]
+		[
+			"delmurgium",
+			"OppoExpunged",
+			[
+				40,
+				40,
+				40
+			]
+		]
 	],
-
 	"weekCharacters": [
-		"senpai",
+		"dad",
 		"bf",
 		"gf"
 	],
-	"weekBackground": "school",
-
-	"storyName": "hating simulator ft. moawling",
-	"weekBefore": "week5",
-	"weekName": "Week 6",
-	"startUnlocked": true,
-
-	"hideStoryMode": false,
-	"hideFreeplay": false
+	"hideStoryMode": true,
+	"hiddenUntilUnlocked": false,
+	"weekName": "Spam"
 }

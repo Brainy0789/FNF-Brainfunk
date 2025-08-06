@@ -1,9 +1,20 @@
 package;
 
-import flixel.addons.display.FlxBackdrop;
+import flixel.FlxG;
+import flixel.FlxSprite;
+import flixel.FlxSubState;
+import flixel.addons.transition.FlxTransitionableState;
+import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.input.keyboard.FlxKey;
-import flixel.util.FlxAxes;
+import flixel.sound.FlxSound;
+import flixel.text.FlxText;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
+import flixel.util.FlxColor;
+import flixel.util.FlxTimer;
+import flixel.addons.display.FlxBackdrop;
 import openfl.display.BlendMode;
+import flixel.util.FlxAxes;
 
 class RenderingDoneSubState extends MusicBeatSubstate {
 	var background:FlxSprite;
@@ -29,7 +40,7 @@ class RenderingDoneSubState extends MusicBeatSubstate {
 			FlxG.sound.playMusic(Paths.music('PeggleCreditsOST'), 0);
 		} else {
 		FlxG.sound.playMusic(Paths.music('PeggleNightsProgressOST'), 0);
-		}
+		}		
 		FlxG.sound.music.fadeIn(2, 0, 0.5);
 
 		background = new FlxSprite(0, 0).loadGraphic(Paths.image('aboutMenu'));

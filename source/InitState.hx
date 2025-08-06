@@ -1,5 +1,7 @@
 package;
 
+import flixel.addons.transition.FlxTransitionableState;
+import flixel.FlxG;
 import flixel.FlxState;
 
 /**

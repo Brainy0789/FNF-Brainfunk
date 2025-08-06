@@ -1,7 +1,14 @@
 package editors;
 
-import Alphabet;
-import DialogueBoxPsych;
+import flixel.FlxG;
+import flixel.FlxSprite;
+import flixel.addons.display.FlxGridOverlay;
+import flixel.addons.transition.FlxTransitionableState;
+import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.math.FlxMath;
+import flixel.text.FlxText;
+import flixel.util.FlxColor;
+import flixel.sound.FlxSound;
 import flixel.addons.ui.FlxInputText;
 import flixel.addons.ui.FlxUI9SliceSprite;
 import flixel.addons.ui.FlxUI;
@@ -10,14 +17,19 @@ import flixel.addons.ui.FlxUIInputText;
 import flixel.addons.ui.FlxUINumericStepper;
 import flixel.addons.ui.FlxUITabMenu;
 import flixel.ui.FlxButton;
-import lime.system.Clipboard;
+import openfl.net.FileReference;
 import openfl.events.Event;
 import openfl.events.IOErrorEvent;
-import openfl.net.FileReference;
-
+import flash.net.FileFilter;
+import haxe.Json;
+import DialogueBoxPsych;
+import lime.system.Clipboard;
+import Alphabet;
 #if sys
+import sys.io.File;
 #end
 
+using StringTools;
 
 class DialogueEditorState extends MusicBeatState
 {
@@ -51,7 +63,7 @@ class DialogueEditorState extends MusicBeatState
 				copyDefaultLine()
 			]
 		};
-
+		
 		character = new DialogueCharacter();
 		character.scrollFactor.set();
 		add(character);
@@ -88,7 +100,7 @@ class DialogueEditorState extends MusicBeatState
 		animText.setFormat(Paths.font("vcr.ttf"), 24, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		animText.scrollFactor.set();
 		add(animText);
-
+		
 		daText = new TypedAlphabet(DialogueBoxPsych.DEFAULT_TEXT_X, DialogueBoxPsych.DEFAULT_TEXT_Y, DEFAULT_TEXT);
 		daText.scaleX = 0.7;
 		daText.scaleY = 0.7;
@@ -138,7 +150,7 @@ class DialogueEditorState extends MusicBeatState
 		soundInputText = new FlxUIInputText(10, speedStepper.y + 40, 150, '', 8);
 		blockPressWhileTypingOn.push(soundInputText);
 		soundInputText.focusGained = () -> FlxG.stage.window.textInputEnabled = true;
-
+		
 		lineInputText = new FlxUIInputText(10, soundInputText.y + 35, 200, DEFAULT_TEXT, 8);
 		blockPressWhileTypingOn.push(lineInputText);
 		lineInputText.focusGained = () -> FlxG.stage.window.textInputEnabled = true;
@@ -207,7 +219,7 @@ class DialogueEditorState extends MusicBeatState
 		switch(character.jsonFile.dialogue_pos) {
 			case 'right':
 				character.x = FlxG.width - character.width + DialogueBoxPsych.RIGHT_CHAR_X;
-
+			
 			case 'center':
 				character.x = FlxG.width / 2;
 				character.x -= character.width / 2;
@@ -234,7 +246,7 @@ class DialogueEditorState extends MusicBeatState
 		daText.text = textToType;
 		daText.resetDialogue();
 
-		if(skipDialogue)
+		if(skipDialogue) 
 			daText.finishText();
 		else if(daText.delay > 0)
 		{

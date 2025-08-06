@@ -1,25 +1,23 @@
 package debug;
 
-import debug.Memory;
-import lime.system.System;
-import mem.GetTotalMemory;
 import openfl.text.TextField;
 import openfl.text.TextFormat;
+import flixel.util.FlxStringUtil;
+import lime.system.System;
+import debug.Memory;
 
 class FPSCounter extends TextField
 {
 	public var currentFPS(default, null):Float;
 
-	/*
-	* The current memory usage (WARNING: This might NOT your total memory usage, rather it might show the garbage collector memory if you aren't running on a C++ platform.)
-	*/
+	/**
+		The current memory usage (WARNING: this is NOT your total program memory usage, rather it shows the garbage collector memory)
+	**/
 	public var memory(get, never):Float;
 	inline function get_memory():Float
-		return GetTotalMemory.getCurrentRSS();
+		return Memory.gay();
 
-	var mempeak(get, never):Float;
-	inline function get_mempeak():Float
-	        return GetTotalMemory.getPeakRSS();
+	var mempeak:Float = 0;
 
 	@:noCompletion private var times:Array<Float>;
 
@@ -67,6 +65,8 @@ class FPSCounter extends TextField
 		}
 		else fpsMultiplier = 1.0;
 
+		if (memory > mempeak) mempeak = memory;
+
 		currentFPS = Math.min(FlxG.drawFramerate, times.length) / fpsMultiplier;
 		updateText();
 
@@ -87,7 +87,7 @@ class FPSCounter extends TextField
 			if (currentFPS <= ClientPrefs.framerate / 4)
 				textColor = 0xFFFF0000;
 		}
-		// deltaTimeout = 0.0;
+		deltaTimeout = 0.0;
 	}
 
 	public dynamic function updateText():Void   // so people can override it in hscript

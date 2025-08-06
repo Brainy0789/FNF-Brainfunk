@@ -1,6 +1,15 @@
 package;
 
+import sys.FileSystem;
+import flixel.group.FlxSpriteGroup;
 import flixel.group.FlxSpriteGroup.FlxTypedSpriteGroup;
+import flixel.FlxObject;
+import flixel.text.FlxText;
+import flixel.util.FlxColor;
+import flixel.FlxSprite;
+import flixel.math.FlxMath;
+import flixel.util.FlxColor;
+import flixel.util.FlxStringUtil;
 
 typedef SongHeading = {
 	var path:String;
@@ -25,6 +34,7 @@ class CreditsPopUp extends FlxSpriteGroup
 		var headingPath:SongHeading = null;
 
 		headingPath = {path: PlayState.SONG.songCreditBarPath.length <= 0 ? 'JSEHeading' : 'songHeadings/' + PlayState.SONG.songCreditBarPath, antiAliasing: ClientPrefs.globalAntialiasing, iconOffset: 0};
+
 
 		if (PlayState.SONG.songCreditIcon.length >= 1) songCreatorIcon = PlayState.SONG.songCreditIcon;
 			else songCreatorIcon = 'ExampleIcon';
@@ -69,7 +79,7 @@ class CreditsPopUp extends FlxSpriteGroup
 		bg.antialiasing = newHeading.antiAliasing;
 		curHeading = newHeading;
 		add(bg);
-
+		
 		rescaleBG();
 	}
 	public function changeText(newText:String, newIcon:String, rescaleHeading:Bool = true)

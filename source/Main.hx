@@ -7,6 +7,7 @@ import lime.app.Application;
 import openfl.Lib;
 import openfl.display.Sprite;
 
+using StringTools;
 #if (linux || mac)
 import lime.graphics.Image;
 #end

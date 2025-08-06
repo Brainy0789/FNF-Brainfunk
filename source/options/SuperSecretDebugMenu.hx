@@ -1,9 +1,29 @@
 package options;
 
-import Controls;
-import flixel.graphics.FlxGraphic;
-import flixel.input.keyboard.FlxKey;
+import flash.text.TextField;
+import flixel.FlxG;
+import flixel.FlxSprite;
+import flixel.addons.display.FlxGridOverlay;
+import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.math.FlxMath;
+import flixel.text.FlxText;
+import flixel.util.FlxColor;
 import haxe.Exception;
+import lime.utils.Assets;
+import flixel.FlxSubState;
+import flash.text.TextField;
+import flixel.FlxG;
+import flixel.FlxSprite;
+import flixel.util.FlxSave;
+import haxe.Json;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
+import flixel.util.FlxTimer;
+import flixel.input.keyboard.FlxKey;
+import flixel.graphics.FlxGraphic;
+import Controls;
+
+using StringTools;
 
 class SuperSecretDebugMenu extends BaseOptionsMenu
 {
@@ -96,7 +116,7 @@ class SuperSecretDebugMenu extends BaseOptionsMenu
                         "are you sure?"
                     ];
     var nextMessage:Void->Void = null;
-
+    
     nextMessage = function() {
         i++;
         if (i >= messages.length) {
@@ -105,7 +125,7 @@ class SuperSecretDebugMenu extends BaseOptionsMenu
             openSubState(new Prompt(messages[i], 0, function() {nextMessage();}, null, false, "Yes", "No"));
         }
     }
-
+    
     nextMessage();
 	}
 	function doDaUpdate():Void {
@@ -132,7 +152,7 @@ class SuperSecretDebugMenu extends BaseOptionsMenu
 
 			http.request();
 		}
-
+    
     		FlxG.switchState(OutdatedState.new);
 	}
 }

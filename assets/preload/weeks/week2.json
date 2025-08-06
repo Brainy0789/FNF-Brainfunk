@@ -1,22 +1,45 @@
 {
-	"songs": [
-		["Spookeez", "spooky", [34, 51, 68]],
-		["South", "spooky", [34, 51, 68]],
-		["Monster", "monster", [34, 51, 68]]
-	],
-
-	"weekCharacters": [
-		"spooky",
-		"bf",
-		"gf"
-	],
-	"weekBackground": "halloween",
-
-	"storyName": "Spooky Month",
-	"weekBefore": "week1",
-	"weekName": "Week 2",
+	"storyName": "chapter 2: Bambi's unneeded rage",
+	"difficulties": "normal",
+	"hideFreeplay": false,
+	"weekBackground": "bamboi",
+	"weekBefore": "",
 	"startUnlocked": true,
-
+	"songs": [
+		[
+			"Kettle corn",
+			"bambi",
+			[
+				95,
+				233,
+				53
+			]
+		],
+		[
+			"Agro-cultured",
+			"bambi",
+			[
+				95,
+				233,
+				53
+			]
+		],
+		[
+			"Phonebreaker",
+			"bambi-angey",
+			[
+				255,
+				113,
+				73
+			]
+		]
+	],
+	"weekCharacters": [
+		"",
+		"",
+		""
+	],
 	"hideStoryMode": false,
-	"hideFreeplay": false
+	"hiddenUntilUnlocked": false,
+	"weekName": "Week2"
 }

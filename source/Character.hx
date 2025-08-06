@@ -1,10 +1,25 @@
 package;
 
-import Section.SwagSection;
+import flixel.tweens.FlxEase;
+import flixel.FlxG;
+import flixel.FlxSprite;
 import flixel.addons.effects.FlxTrail;
 import flixel.animation.FlxBaseAnimation;
+import flixel.graphics.frames.FlxAtlasFrames;
+import flixel.tweens.FlxTween;
 import flixel.util.FlxSort;
+import flixel.util.FlxDestroyUtil;
+import flixel.math.FlxRect;
+import Section.SwagSection;
+#if MODS_ALLOWED
+import sys.io.File;
+import sys.FileSystem;
+#end
 import openfl.utils.AssetType;
+import openfl.utils.Assets;
+import haxe.Json;
+
+using StringTools;
 
 typedef CharacterFile = {
 	var animations:Array<AnimArray>;
@@ -164,7 +179,7 @@ class Character extends FlxSprite
 	public function loadCharacterFile(json:CharacterFile)
 	{
 		isAnimateAtlas = false;
-
+		
 		#if flxanimate
 		var animToFind:String = Paths.getPath('images/' + json.image + '/Animation.json', TEXT);
 		if (#if MODS_ALLOWED FileSystem.exists(animToFind) || #end Assets.exists(animToFind))
@@ -311,7 +326,7 @@ class Character extends FlxSprite
 			dance();
 			finishAnimation();
 		}
-
+		
 		switch(curCharacter)
 		{
 			case 'pico-speaker':
@@ -400,7 +415,7 @@ class Character extends FlxSprite
 		{
 			if(value) atlas.anim.pause();
 			else atlas.anim.resume();
-		}
+		} 
 
 		return value;
 	}
@@ -463,7 +478,7 @@ class Character extends FlxSprite
 				danced = !danced;
 		}
 	}
-
+	
 	function loadMappedAnims():Void
 	{
 		var noteData:Array<SwagSection> = Song.loadFromJson('picospeaker', Paths.formatToSongPath(PlayState.SONG.song)).notes;

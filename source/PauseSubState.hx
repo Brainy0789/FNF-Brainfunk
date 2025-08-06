@@ -1,9 +1,21 @@
 package;
 
 import Controls.Control;
-import GameplayChangersSubstate;
+import flixel.FlxG;
+import flixel.FlxSprite;
+import flixel.FlxSubState;
+import flixel.addons.transition.FlxTransitionableState;
+import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.input.keyboard.FlxKey;
+import flixel.sound.FlxSound;
+import flixel.text.FlxText;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
+import flixel.util.FlxColor;
+import flixel.FlxCamera;
+import flixel.util.FlxStringUtil;
 import options.OptionsState;
+import GameplayChangersSubstate;
 
 class PauseSubState extends MusicBeatSubstate
 {
@@ -36,7 +48,7 @@ class PauseSubState extends MusicBeatSubstate
 		if(PlayState.chartingMode)
 		{
 			menuItemsOG.insert(2, 'Leave Charting Mode');
-
+			
 			var num:Int = 0;
 			if(!PlayState.instance.startingSong)
 			{
@@ -54,6 +66,7 @@ class PauseSubState extends MusicBeatSubstate
 			difficultyChoices.push(diff);
 		}
 		difficultyChoices.push('BACK');
+
 
 		pauseMusic = new FlxSound();
 		if(songName != null) {
@@ -265,7 +278,7 @@ class PauseSubState extends MusicBeatSubstate
 				case 'Toggle Botplay':
 					PlayState.instance.cpuControlled = !PlayState.instance.cpuControlled;
 					PlayState.changedDifficulty = true;
-					if (PlayState.instance.botplayTxt != null)
+					if (PlayState.instance.botplayTxt != null) 
 					{
 					PlayState.instance.botplayTxt.visible = PlayState.instance.cpuControlled;
 					PlayState.instance.botplayTxt.alpha = 1;
@@ -298,7 +311,7 @@ class PauseSubState extends MusicBeatSubstate
 					} else if (!PlayState.isStoryMode) {
 						FlxG.switchState(FreeplayState.new);
 					}
-					Paths.playMenuMusic(true);
+					FlxG.sound.playMusic(Paths.music('freakyMenu-' + ClientPrefs.daMenuMusic));
 					PlayState.changedDifficulty = false;
 					PlayState.chartingMode = false;
 			case "Exit to Main Menu":
@@ -307,7 +320,7 @@ class PauseSubState extends MusicBeatSubstate
 
 					WeekData.loadTheFirstEnabledMod();
 						FlxG.switchState(MainMenuState.new);
-					Paths.playMenuMusic(true);
+					FlxG.sound.playMusic(Paths.music('freakyMenu-' + ClientPrefs.daMenuMusic));
 					PlayState.changedDifficulty = false;
 					PlayState.chartingMode = false;
 			case "Exit Game":
@@ -318,7 +331,8 @@ class PauseSubState extends MusicBeatSubstate
 					regenMenu();
 			case "Exit to your Mother":
 					trace ("YO MAMA");
-					throw "lol";
+					var aLittleCrashing:FlxSprite = null;
+					aLittleCrashing.destroy();
 				}
 			}
 		}
@@ -427,7 +441,7 @@ class PauseSubState extends MusicBeatSubstate
 		curSelected = 0;
 		changeSelection();
 	}
-
+	
 	function updateSkipTextStuff()
 	{
 		if(skipTimeText != null || skipTimeTracker != null) {

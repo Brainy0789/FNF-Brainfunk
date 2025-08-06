@@ -1,29 +1,29 @@
 package animateatlas.displayobject;
 
-import animateatlas.HelperEnums.LoopMode;
-import animateatlas.HelperEnums.SymbolType;
-import animateatlas.JSONData.BitmapPosData;
-import animateatlas.JSONData.ColorData;
-import animateatlas.JSONData.ElementData;
-import animateatlas.JSONData.FilterData;
-import animateatlas.JSONData.LayerData;
-import animateatlas.JSONData.LayerFrameData;
-import animateatlas.JSONData.Matrix3DData;
-import animateatlas.JSONData.SymbolData;
-import animateatlas.JSONData.SymbolInstanceData;
-import openfl.display.Bitmap;
-import openfl.display.BitmapData;
-import openfl.display.FrameLabel;
+import openfl.filters.GlowFilter;
+import openfl.filters.BlurFilter;
 import openfl.display.PixelSnapping;
+import openfl.geom.Point;
+import openfl.display.BitmapData;
+import openfl.display.Bitmap;
 import openfl.display.Sprite;
 import openfl.errors.ArgumentError;
-import openfl.errors.Error;
-import openfl.filters.BlurFilter;
-import openfl.filters.GlowFilter;
-import openfl.geom.ColorTransform;
-import openfl.geom.Matrix;
-import openfl.geom.Point;
 import openfl.geom.Rectangle;
+import openfl.errors.Error;
+import animateatlas.JSONData.ElementData;
+import animateatlas.HelperEnums.LoopMode;
+import animateatlas.HelperEnums.SymbolType;
+import openfl.display.FrameLabel;
+import animateatlas.JSONData.SymbolData;
+import animateatlas.JSONData.SymbolInstanceData;
+import animateatlas.JSONData.LayerData;
+import animateatlas.JSONData.BitmapPosData;
+import animateatlas.JSONData.Matrix3DData;
+import animateatlas.JSONData.LayerFrameData;
+import animateatlas.JSONData.ColorData;
+import openfl.geom.Matrix;
+import openfl.geom.ColorTransform;
+import animateatlas.JSONData.FilterData;
 
 class SpriteSymbol extends Sprite {
 	public var currentLabel(get, never):String;
@@ -39,7 +39,7 @@ class SpriteSymbol extends Sprite {
 	private var _symbolName:String;
 	private var _type:String;
 	private var _loopMode:String;
-
+	
 	private var _currentFrame:Int;
 	private var _composedFrame:Int;
 	private var _bitmap:Bitmap;
@@ -183,8 +183,8 @@ class SpriteSymbol extends Sprite {
 			newSymbol.setColor(elementData.color);
 			newSymbol.setLoop(elementData.loop);
 			newSymbol.setType(elementData.symbolType);
-
-
+			
+		
 
 			if (newSymbol.type == SymbolType.GRAPHIC) {
 				var firstFrame:Int = elementData.firstFrame;
@@ -198,7 +198,7 @@ class SpriteSymbol extends Sprite {
 					newSymbol.currentFrame = firstFrame + frameAge;
 				}
 			}
-
+			
 		}
 
 		var numObsoleteSymbols:Int = (layer.numChildren - numElements);
@@ -247,8 +247,8 @@ class SpriteSymbol extends Sprite {
 				clippedTexture.copyPixels(_texture, _tempRect, _zeroPoint);
 				_bitmap.bitmapData = clippedTexture;
 				_bitmap.smoothing = smoothing;
-
-
+				
+	
 			}
 			// aditional checks for rotation
 			if (spriteData.rotated) {
@@ -295,10 +295,11 @@ class SpriteSymbol extends Sprite {
 
 
 
+
 			}
 
 		}
-
+		
 	}
 
 	private function setTransformationMatrix(data:Matrix3DData):Void {
@@ -322,7 +323,7 @@ class SpriteSymbol extends Sprite {
 			newTransform.alphaMultiplier = (data.alphaMultiplier == null ? 1 : data.alphaMultiplier);
 		}
 		transform.colorTransform = newTransform;
-
+		
 	}
 
 	private function setLoop(data:String):Void {

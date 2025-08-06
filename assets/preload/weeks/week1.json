@@ -1,22 +1,45 @@
 {
-	"songs": [
-		["Bopeebo", "dad", [146, 113, 253]],
-		["Fresh", "dad", [146, 113, 253]],
-		["Dad Battle", "dad", [146, 113, 253]]
-	],
-
-	"weekCharacters": [
-		"dad",
-		"bf",
-		"gf"
-	],
-	"weekBackground": "stage",
-
-	"storyName": "Daddy Dearest",
-	"weekBefore": "tutorial",
-	"weekName": "Week 1",
+	"storyName": "chapter 1: dave's funky battle",
+	"difficulties": "Normal, dave",
+	"hideFreeplay": false,
+	"weekBackground": "daveHouse",
+	"weekBefore": "",
 	"startUnlocked": true,
-
 	"hideStoryMode": false,
-	"hideFreeplay": false
+	"songs": [
+		[
+			"Prosthesis",
+			"dave",
+			[
+				6,
+				93,
+				233
+			]
+		],
+		[
+			"instability",
+			"dave-annoyed",
+			[
+				6,
+				93,
+				233
+			]
+		],
+		[
+			"dimensionalized",
+			"dave-angey",
+			[
+				246,
+				153,
+				153
+			]
+		]
+	],
+	"weekCharacters": [
+		"",
+		"",
+		""
+	],
+	"hiddenUntilUnlocked": false,
+	"weekName": "Week1"
 }

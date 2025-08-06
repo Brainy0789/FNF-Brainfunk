@@ -1,7 +1,9 @@
 package backend;
 
-import flixel.system.FlxAssets.FlxShader;
 import openfl.display3D.Program3D;
+import flixel.system.FlxAssets.FlxShader;
+
+using StringTools;
 
 // goddamn prefix
 

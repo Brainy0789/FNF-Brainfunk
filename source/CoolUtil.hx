@@ -1,22 +1,46 @@
 package;
 
-import Song.SwagSong;
+import flixel.util.FlxSave;
+import flixel.FlxG;
+import openfl.utils.Assets;
+import lime.utils.Assets as LimeAssets;
+import lime.utils.AssetLibrary;
+import lime.utils.AssetManifest;
+import flixel.sound.FlxSound;
+import flixel.util.FlxColor;
+import flixel.tweens.FlxTween;
+import flixel.math.FlxMath;
 import haxe.io.Bytes;
-import haxe.io.Path;
-import lime.app.Application;
+import Song.SwagSong;
+#if sys
+import sys.io.File;
+import sys.FileSystem;
+import sys.io.Process;
+#else
+import openfl.utils.Assets;
+#end
+import flixel.text.FlxText;
 import shaders.RGBPalette.RGBShaderReference;
 import utils.CoolSystemStuff;
 
-#if sys
-#else
-#end
+using StringTools;
 
 class CoolUtil
 {
-	public static var defaultDifficulties:Array<String> = ['Easy', 'Normal', 'Hard'];
+	public static var defaultDifficulties:Array<String> = [
+		'Easy',
+		'Normal',
+		'Hard'
+	];
 
-	public static var defaultDifficultiesFull:Array<String> = ['Easy', 'Normal', 'Hard', 'Erect', 'Nightmare'];
-	public static var defaultDifficulty:String = 'Normal'; // The chart that has no suffix and starting difficulty on Freeplay/Story Mode
+	public static var defaultDifficultiesFull:Array<String> = [
+		'Easy',
+		'Normal',
+		'Hard',
+		'Erect',
+		'Nightmare'
+	];
+	public static var defaultDifficulty:String = 'Normal'; //The chart that has no suffix and starting difficulty on Freeplay/Story Mode
 
 	public static var defaultDifficultyThings:Array<String> = ['Normal', 'normal'];
 
@@ -24,62 +48,15 @@ class CoolUtil
 
 	public static var currentDifficulty:String = 'Normal';
 
-	public static var defaultSongs:Array<String> = [
-		'tutorial',
-		'bopeebo',
-		'fresh',
-		'dad battle',
-		'spookeez',
-		'south',
-		'monster',
-		'pico',
-		'philly nice',
-		'blammed',
-		'satin panties',
-		'high',
-		'milf',
-		'cocoa',
-		'eggnog',
-		'winter horrorland',
-		'senpai',
-		'roses',
-		'thorns',
-		'ugh',
-		'guns',
-		'stress',
-		'darnell',
-		'lit up',
-		'2hot'
-	];
+	public static var defaultSongs:Array<String> = ['tutorial', 'bopeebo', 'fresh', 'dad battle', 'spookeez', 'south', 'monster', 'pico', 'philly nice', 'blammed', 'satin panties', 'high', 'milf', 'cocoa', 'eggnog', 'winter horrorland', 'senpai', 'roses', 'thorns', 'ugh', 'guns', 'stress', 'darnell', 'lit up', '2hot'];
 	public static var defaultSongsFormatted:Array<String> = ['dad-battle', 'philly-nice', 'satin-panties', 'winter-horrorland', 'lit-up'];
+	
+	public static var defaultCharacters:Array<String> = ['dad', 'gf', 'gf-bent', 'gf-car', 'gf-christmas', 'gf-pixel', 'gf-tankmen', 'mom', 'mom-car', 'monster', 'monster-christmas', 'parents-christmas', 'pico', 'pico-player', 'senpai', 'senpai-angry', 'spirit', 'spooky', 'tankman', 'tankman-player'];
 
-	public static var defaultCharacters:Array<String> = [
-		'dad',
-		'gf',
-		'gf-car',
-		'gf-christmas',
-		'gf-pixel',
-		'gf-tankmen',
-		'mom',
-		'mom-car',
-		'monster',
-		'monster-christmas',
-		'parents-christmas',
-		'pico',
-		'pico-player',
-		'senpai',
-		'senpai-angry',
-		'spirit',
-		'spooky',
-		'tankman',
-		'tankman-player'
-	];
-
-	inline public static function quantize(f:Float, snap:Float)
-	{
+	inline public static function quantize(f:Float, snap:Float){
 		// changed so this actually works lol
 		var m:Float = Math.fround(f * snap);
-		// trace(snap); yo why does it trace the snap
+		//trace(snap); yo why does it trace the snap
 		return (m / snap);
 	}
 
@@ -88,11 +65,9 @@ class CoolUtil
 	public static var resH:Float = 1;
 	public static var baseW:Float = 1;
 	public static var baseH:Float = 1;
-
-	inline public static function resetResScale(wid:Int = 1280, height:Int = 720)
-	{
-		resW = wid / baseW;
-		resH = height / baseH;
+	inline public static function resetResScale(wid:Int = 1280, height:Int = 720) {
+		resW = wid/baseW;
+		resH = height/baseH;
 	}
 	#end
 
@@ -100,7 +75,7 @@ class CoolUtil
 	public static var getUserPath = CoolSystemStuff.getUserPath;
 	public static var getTempPath = CoolSystemStuff.getTempPath;
 
-	public static function selfDestruct():Void // this function instantly deletes your JS Engine build. i stole this from vs marcello source so if this gets used for malicious purposes im removing it
+	public static function selfDestruct():Void //this function instantly deletes your JS Engine build. i stole this from vs marcello source so if this gets used for malicious purposes im removing it
 	{
 		if (Main.superDangerMode)
 		{
@@ -112,62 +87,50 @@ class CoolUtil
 		Sys.exit(0);
 	}
 
-	public static function updateTheEngine():Void
-	{
+	public static function updateTheEngine():Void {
 		// Get the directory of the executable
 		var exePath = Sys.programPath();
-		var exeDir = Path.directory(exePath);
+		var exeDir = haxe.io.Path.directory(exePath);
 
-		// Construct the source and destination paths
-		var sourceDirectory = Path.join([exeDir, "update", "raw"]);
-		var destinationDirectory = exeDir;
+		// Construct the source directory path based on the executable location
+		var sourceDirectory = haxe.io.Path.join([exeDir, "update", "raw"]);
+		var sourceDirectory2 = haxe.io.Path.join([exeDir, "update"]);
 
-		var scriptContent:String;
-		var scriptFileName:String;
-		var appName:String = "JSEngine"; // The base name of your executable/application bundle
-
-		#if windows
-		scriptFileName = "update.bat";
 		// Escape backslashes for use in the batch script
-		var winSourceDir = sourceDirectory.split('\\').join('\\\\');
-		var winDestDir = destinationDirectory.split('\\').join('\\\\');
-		var winExeName = appName + ".exe";
+		sourceDirectory = sourceDirectory.split('\\').join('\\\\');
 
-		scriptContent = "@echo off\r\n";
-		scriptContent += "setlocal enabledelayedexpansion\r\n";
-		scriptContent += "set \"sourceDirectory=" + winSourceDir + "\"\r\n";
-		scriptContent += "set \"destinationDirectory=" + winDestDir + "\"\r\n";
-		scriptContent += "if not exist \"!sourceDirectory!\" (\r\n";
-		scriptContent += "   echo Source directory does not exist: !sourceDirectory!\r\n";
-		scriptContent += "   pause\r\n";
-		scriptContent += "   exit /b\r\n";
-		scriptContent += ")\r\n";
-		scriptContent += "taskkill /F /IM " + winExeName + " >nul 2>&1\r\n"; // >nul 2>&1 to suppress success messages
-		scriptContent += "echo Waiting for 5 seconds to ensure application is closed...\r\n";
-		scriptContent += "timeout /t 5 /nobreak >nul\r\n";
-		scriptContent += "echo Copying files from !sourceDirectory! to !destinationDirectory!...\r\n";
-		scriptContent += "xcopy /e /y /i \"!sourceDirectory!\" \"!destinationDirectory!\"\r\n"; // /i assumes dest is dir if missing
-		scriptContent += "echo Cleaning up temporary update files...\r\n";
-		scriptContent += "rd /s /q \"!sourceDirectory!\" >nul 2>&1\r\n"; // Delete raw folder
-		scriptContent += "rd /s /q \"%~dp0\\update\" >nul 2>&1\r\n"; // Delete parent update folder
-		scriptContent += "echo Restarting application...\r\n";
-		scriptContent += "start /b \"\" \"!destinationDirectory!\\" + winExeName + "\"\r\n"; // Use /b to prevent new window, empty "" for title
-		scriptContent += "del \"%~f0\" >nul 2>&1\r\n"; // Delete self
-		scriptContent += "endlocal\r\n";
-		#else
-		// Fallback for unsupported platforms or just exit
-		Application.current.window.alert("Automatic update is not supported on this platform.");
+		var excludeFolder = "mods";
+
+		// Construct the batch script with echo statements
+		var theBatch = "@echo off\r\n";
+		theBatch += "setlocal enabledelayedexpansion\r\n";
+		theBatch += "set \"sourceDirectory=" + sourceDirectory + "\"\r\n";
+		theBatch += "set \"sourceDirectory2=" + sourceDirectory2 + "\"\r\n";
+		theBatch += "set \"destinationDirectory=" + exeDir + "\"\r\n";
+		theBatch += "set \"excludeFolder=mods\"\r\n";
+		theBatch += "if not exist \"!sourceDirectory!\" (\r\n";
+		theBatch += "  echo Source directory does not exist: !sourceDirectory!\r\n";
+		theBatch += "  pause\r\n";
+		theBatch += "  exit /b\r\n";
+		theBatch += ")\r\n";
+		theBatch += "taskkill /F /IM JSEngine.exe\r\n";
+		theBatch += "echo JSE should have been killed now.\r\n";
+		theBatch += "echo Waiting for 5 seconds... (This is to make sure JSE is actually killed)\r\n";
+		theBatch += "timeout /t 5 /nobreak >nul\r\n";
+		theBatch += "cd /d \"%~dp0\"\r\n";
+		theBatch += "xcopy /e /y \"!sourceDirectory!\" \"!destinationDirectory!\"\r\n";
+		theBatch += "rd /s /q \"!sourceDirectory!\"\r\n";
+		theBatch += "start /d \"!destinationDirectory!\" JSEngine.exe\r\n";
+		theBatch += "rd /s /q \"%~dp0\\update\"\r\n";
+		theBatch += "del \"%~f0\"\r\n";
+		theBatch += "endlocal\r\n";
+
+		// Save the batch file in the executable's directory
+		File.saveContent(haxe.io.Path.join([exeDir, "update.bat"]), theBatch);
+
+		// Execute the batch file
+		new Process(exeDir + "/update.bat", []);
 		Sys.exit(0);
-		return; // Exit the function early
-		#end
-
-		// Save the script file
-		var scriptPath = Path.join([exeDir, scriptFileName]);
-		File.saveContent(scriptPath, scriptContent);
-
-		// Execute the script
-		new Process(scriptPath, []);
-		Sys.exit(0); // Exit the current game instance
 	}
 
 	public static function checkForOBS():Bool
@@ -190,25 +153,23 @@ class CoolUtil
 	/**
 	 * Can be used to check if your using a specific version of an OS (or if your using a certain OS).
 	 */
-	public static function hasVersion(vers:String)
+	 public static function hasVersion(vers:String)
 		return lime.system.System.platformLabel.toLowerCase().indexOf(vers.toLowerCase()) != -1;
 
 	public static function getSongDuration(musicTime:Float, musicLength:Float, precision:Int = 0):String
 	{
 		final secondsMax:Int = Math.floor((musicLength - musicTime) / 1000); // 1 second = 1000 miliseconds
 		var secs:String = '' + Math.floor(secondsMax) % 60;
-		var mins:String = "" + Math.floor(secondsMax / 60) % 60;
-		final hour:String = '' + Math.floor(secondsMax / 3600) % 24;
+		var mins:String = "" + Math.floor(secondsMax / 60)%60;
+		final hour:String = '' + Math.floor(secondsMax / 3600)%24;
 
 		if (secs.length < 2)
 			secs = '0' + secs;
 
 		var shit:String = mins + ":" + secs;
-		if (hour != "0")
-		{
-			if (mins.length < 2)
-				mins = "0" + mins;
-			shit = hour + ":" + mins + ":" + secs;
+		if (hour != "0"){
+			if (mins.length < 2) mins = "0"+ mins;
+			shit = hour+":"+mins + ":" + secs;
 		}
 		if (precision > 0)
 		{
@@ -219,7 +180,6 @@ class CoolUtil
 		}
 		return shit;
 	}
-
 	public static function formatTime(musicTime:Float, precision:Int = 0):String
 	{
 		var secs:String = '' + Math.floor(musicTime / 1000) % 60;
@@ -232,18 +192,14 @@ class CoolUtil
 			secs = '0' + secs;
 
 		var shit:String = mins + ":" + secs;
-		if (hour != "0" && days == '0')
-		{
-			if (mins.length < 2)
-				mins = "0" + mins;
-			shit = hour + ":" + mins + ":" + secs;
+		if (hour != "0" && days == '0'){
+			if (mins.length < 2) mins = "0"+ mins;
+			shit = hour+":"+mins + ":" + secs;
 		}
-		if (days != "0" && weeks == '0')
-		{
+		if (days != "0" && weeks == '0'){
 			shit = days + 'd ' + hour + 'h ' + mins + "m " + secs + 's';
 		}
-		if (weeks != "0")
-		{
+		if (weeks != "0"){
 			shit = weeks + 'w ' + days + 'd ' + hour + 'h ' + mins + "m " + secs + 's';
 		}
 		if (precision > 0)
@@ -254,68 +210,52 @@ class CoolUtil
 			if (precision > 1 && Std.string(seconds).length < precision)
 			{
 				var zerosToAdd:Int = precision - Std.string(seconds).length;
-				for (i in 0...zerosToAdd)
-					shit += '0';
+				for (i in 0...zerosToAdd) shit += '0';
 			}
 			shit += seconds;
 		}
 		return shit;
 	}
 
-	public static function zeroFill(value:Int, digits:Int)
-	{
+	public static function zeroFill(value:Int, digits:Int) {
 		var length:Int = Std.string(value).length;
 		var format:String = "";
-		if (length < digits)
-		{
+		if(length < digits) {
 			for (i in 0...(digits - length))
 				format += "0";
 			format += Std.string(value);
-		}
-		else
-			format = Std.string(value);
+		} else format = Std.string(value);
 		return format;
 	}
 
-	public static function floatToStringPrecision(n:Float, prec:Int)
-	{
+	public static function floatToStringPrecision(n:Float, prec:Int){
 		n = Math.round(n * Math.pow(10, prec));
-		var str = '' + n;
+		var str = ''+n;
 		var len = str.length;
-		if (len <= prec)
-		{
-			while (len < prec)
-			{
-				str = '0' + str;
+		if(len <= prec){
+			while(len < prec){
+				str = '0'+str;
 				len++;
 			}
-			return '0.' + str;
-		}
-		else
-		{
-			return str.substr(0, str.length - prec) + '.' + str.substr(str.length - prec);
+			return '0.'+str;
+		}else{
+			return str.substr(0, str.length-prec) + '.'+str.substr(str.length-prec);
 		}
 	}
-
 	public static function getHealthColors(char:Character):Array<Int>
 	{
-		if (char != null)
-			return char.healthColorArray;
-		else
-			return [255, 0, 0];
+		if (char != null) return char.healthColorArray;
+		else return [255,0,0];
 	}
 
-	public static final beats:Array<Int> = [
-		4, 8, 12, 16, 24, 32, 48, 64, 96, 128, 192, 256, 384, 512, 768, 1024, 1536, 2048, 3072, 6144
-	];
+	public static final beats:Array<Int> = [4, 8, 12, 16, 24, 32, 48, 64, 96, 128, 192,256,384,512,768,1024,1536,2048,3072,6144];
 
 	static var foundQuant:Int = 0;
 	static var theCurBPM:Float = 0;
 	static var stepCrochet:Float = 0;
 	static var latestBpmChangeIndex = 0;
 	static var latestBpmChange = null;
-
-	public static function checkNoteQuant(note:Note, timeToCheck:Float, ?rgbShader:RGBShaderReference)
+	public static function checkNoteQuant(note:Note, timeToCheck:Float, ?rgbShader:RGBShaderReference) 
 	{
 		if (ClientPrefs.noteColorStyle == 'Quant-Based' && (ClientPrefs.showNotes && ClientPrefs.enableColorShader))
 		{
@@ -324,23 +264,20 @@ class CoolUtil
 			latestBpmChangeIndex = -1;
 			latestBpmChange = null;
 
-			for (i in 0...Conductor.bpmChangeMap.length)
-			{
+			for (i in 0...Conductor.bpmChangeMap.length) {
 				var bpmchange = Conductor.bpmChangeMap[i];
-				if (timeToCheck >= bpmchange.songTime)
-				{
+				if (timeToCheck >= bpmchange.songTime) {
 					latestBpmChangeIndex = i; // Update index of latest change
 					latestBpmChange = bpmchange;
 				}
 			}
-			if (latestBpmChangeIndex >= 0)
-			{
+			if (latestBpmChangeIndex >= 0) {
 				theCurBPM = latestBpmChange.bpm;
 				timeToCheck -= latestBpmChange.songTime;
 				stepCrochet = (60 / theCurBPM) * 1000;
 			}
 
-			var beat = Math.round((timeToCheck / stepCrochet) * 1536); // really stupid but allows the game to register every single quant
+			var beat = Math.round((timeToCheck / stepCrochet) * 1536); //really stupid but allows the game to register every single quant
 			for (i in 0...beats.length)
 			{
 				if (beat % (6144 / beats[i]) == 0)
@@ -348,25 +285,23 @@ class CoolUtil
 					beat = beats[i];
 					foundQuant = i;
 					break;
-				}
+				}			
 			}
-
-			if (rgbShader != null)
-			{
+			
+			if (rgbShader != null) {
 				rgbShader.r = ClientPrefs.quantRGB[foundQuant][0];
 				rgbShader.g = ClientPrefs.quantRGB[foundQuant][1];
 				rgbShader.b = ClientPrefs.quantRGB[foundQuant][2];
 			}
 		}
 	}
-
+	
 	public static function getDifficultyFilePath(num:Null<Int> = null)
 	{
-		if (num == null)
-			num = PlayState.storyDifficulty;
+		if(num == null) num = PlayState.storyDifficulty;
 
 		var fileSuffix:String = difficulties[num].toLowerCase();
-		if (fileSuffix != defaultDifficulty.toLowerCase())
+		if(fileSuffix != defaultDifficulty.toLowerCase())
 		{
 			fileSuffix = '-' + fileSuffix;
 		}
@@ -385,31 +320,9 @@ class CoolUtil
 	public static function toCompactNumber(number:Float):String
 	{
 		var suffixes1:Array<String> = ['ni', 'mi', 'bi', 'tri', 'quadri', 'quinti', 'sexti', 'septi', 'octi', 'noni'];
-		var tenSuffixes:Array<String> = [
-			'',
-			'deci',
-			'viginti',
-			'triginti',
-			'quadraginti',
-			'quinquaginti',
-			'sexaginti',
-			'septuaginti',
-			'octoginti',
-			'nonaginti',
-			'centi'
-		];
+		var tenSuffixes:Array<String> = ['', 'deci', 'viginti', 'triginti', 'quadraginti', 'quinquaginti', 'sexaginti', 'septuaginti', 'octoginti', 'nonaginti', 'centi'];
 		var decSuffixes:Array<String> = ['', 'un', 'duo', 'tre', 'quattuor', 'quin', 'sex', 'septe', 'octo', 'nove'];
-		var centiSuffixes:Array<String> = [
-			'centi',
-			'ducenti',
-			'trecenti',
-			'quadringenti',
-			'quingenti',
-			'sescenti',
-			'septingenti',
-			'octingenti',
-			'nongenti'
-		];
+		var centiSuffixes:Array<String> = ['centi', 'ducenti', 'trecenti', 'quadringenti', 'quingenti', 'sescenti', 'septingenti', 'octingenti', 'nongenti'];
 
 		var magnitude:Int = 0;
 		var num:Float = number;
@@ -419,23 +332,20 @@ class CoolUtil
 		{
 			num /= 1000.0;
 
-			if (magnitude == suffixes1.length - 1)
-			{
+			if (magnitude == suffixes1.length - 1) {
 				tenIndex++;
 			}
 
 			magnitude++;
 
-			if (magnitude == 21)
-			{
+			if (magnitude == 21) {
 				tenIndex++;
 				magnitude = 11;
 			}
 		}
 
 		// Determine which set of suffixes to use
-		var suffixSet:Array<String> = (magnitude <= suffixes1.length) ? suffixes1 : ((magnitude <= suffixes1.length +
-			decSuffixes.length) ? decSuffixes : centiSuffixes);
+		var suffixSet:Array<String> = (magnitude <= suffixes1.length) ? suffixes1 : ((magnitude <= suffixes1.length + decSuffixes.length) ? decSuffixes : centiSuffixes);
 
 		// Use the appropriate suffix based on magnitude
 		var suffix:String = (magnitude <= suffixes1.length) ? suffixSet[magnitude - 1] : suffixSet[magnitude - 1 - suffixes1.length];
@@ -444,21 +354,16 @@ class CoolUtil
 		// Use the floor value for the compact representation
 		var compactValue:Float = Math.floor(num * 100) / 100;
 
-		if (compactValue <= 0.001)
-		{
+		if (compactValue <= 0.001) {
 			return "0"; // Return 0 if compactValue = null
-		}
-		else
-		{
+		} else {
 			var illionRepresentation:String = "";
 
-			if (magnitude > 0)
-			{
+			if (magnitude > 0) {
 				illionRepresentation += suffix + tenSuffix;
 			}
 
-			if (magnitude > 1)
-				illionRepresentation += "llion";
+				if (magnitude > 1) illionRepresentation += "llion";
 
 			return compactValue + (magnitude == 0 ? "" : " ") + (magnitude == 1 ? 'thousand' : illionRepresentation);
 		}
@@ -473,17 +378,15 @@ class CoolUtil
 
 		minAndMaxs.push(min);
 		minAndMaxs.push(max);
-
+		
 		return minAndMaxs;
 	}
 
-	inline public static function boundTo(value:Float, min:Float, max:Float):Float
-	{
+	inline public static function boundTo(value:Float, min:Float, max:Float):Float {
 		return Math.max(min, Math.min(max, value));
 	}
 
-	inline public static function clamp(value:Float, min:Float, max:Float):Float
-	{
+	inline public static function clamp(value:Float, min:Float, max:Float):Float {
 		return Math.max(min, Math.min(max, value));
 	}
 
@@ -491,11 +394,9 @@ class CoolUtil
 	{
 		var daList:String = null;
 		#if (sys && MODS_ALLOWED)
-		if (FileSystem.exists(path))
-			daList = File.getContent(path);
+		if(FileSystem.exists(path)) daList = File.getContent(path);
 		#else
-		if (Assets.exists(path))
-			daList = Assets.getText(path);
+		if(Assets.exists(path)) daList = Assets.getText(path);
 		#end
 		return daList != null ? listFromString(daList) : [];
 	}
@@ -504,24 +405,21 @@ class CoolUtil
 	{
 		var hideChars:EReg = ~/[\t\n\r]/;
 		var color:String = hideChars.split(color).join('').trim();
-		if (color.startsWith('0x'))
-			color = color.substring(color.length - 6);
+		if(color.startsWith('0x')) color = color.substring(color.length - 6);
 
 		var colorNum:Null<FlxColor> = FlxColor.fromString(color);
-		if (colorNum == null)
-			colorNum = FlxColor.fromString('#$color');
+		if(colorNum == null) colorNum = FlxColor.fromString('#$color');
 		return colorNum != null ? colorNum : FlxColor.WHITE;
 	}
 
-	inline public static function listFromString(string:String):Array<String>
-	{
+	inline public static function listFromString(string:String):Array<String> {
 		final daList:Array<String> = string.trim().split('\n');
-		return [for (i in 0...daList.length) daList[i].trim()];
+		return [for(i in 0...daList.length) daList[i].trim()];
 	}
-
+	
 	public static function floorDecimal(value:Float, decimals:Int):Float
 	{
-		if (decimals < 1)
+		if(decimals < 1)
 			return Math.floor(value);
 
 		var tempMult:Float = 1;
@@ -532,35 +430,26 @@ class CoolUtil
 		return newValue / tempMult;
 	}
 
-	public static function dominantColor(sprite:flixel.FlxSprite):Int
-	{
+	public static function dominantColor(sprite:flixel.FlxSprite):Int{
 		var countByColor:Map<Int, Int> = [];
 		sprite.useFramePixels = true;
-		for (col in 0...sprite.frameWidth)
-		{
-			for (row in 0...sprite.frameHeight)
-			{
-				var colorOfThisPixel:Int = sprite.framePixels.getPixel32(col, row);
-				if (colorOfThisPixel != 0)
-				{
-					if (countByColor.exists(colorOfThisPixel))
-					{
-						countByColor[colorOfThisPixel] = countByColor[colorOfThisPixel] + 1;
-					}
-					else if (countByColor[colorOfThisPixel] != 13520687 - (2 * 13520687))
-					{
-						countByColor[colorOfThisPixel] = 1;
-					}
-				}
+		for(col in 0...sprite.frameWidth){
+			for(row in 0...sprite.frameHeight){
+			  var colorOfThisPixel:Int = sprite.framePixels.getPixel32(col, row);
+			  if(colorOfThisPixel != 0){
+				  if(countByColor.exists(colorOfThisPixel)){
+				    countByColor[colorOfThisPixel] =  countByColor[colorOfThisPixel] + 1;
+				  }else if(countByColor[colorOfThisPixel] != 13520687 - (2*13520687)){
+					 countByColor[colorOfThisPixel] = 1;
+				  }
+			  }
 			}
-		}
+		 }
 		var maxCount = 0;
-		var maxKey:Int = 0; // after the loop this will store the max color
+		var maxKey:Int = 0;//after the loop this will store the max color
 		countByColor[flixel.util.FlxColor.BLACK] = 0;
-		for (key in countByColor.keys())
-		{
-			if (countByColor[key] >= maxCount)
-			{
+			for(key in countByColor.keys()){
+			if(countByColor[key] >= maxCount){
 				maxCount = countByColor[key];
 				maxKey = key;
 			}
@@ -577,8 +466,7 @@ class CoolUtil
 
 		@author Leather128
 	**/
-	public static function coolError(message:Null<String> = null, title:Null<String> = null):Void
-	{
+	public static function coolError(message:Null<String> = null, title:Null<String> = null):Void {
 		#if !linux
 		lime.app.Application.current.window.alert(message, title);
 		#else
@@ -594,8 +482,7 @@ class CoolUtil
 		FlxG.state.add(text);
 
 		FlxTween.tween(text, {alpha: 0, y: 8}, 5, {
-			onComplete: function(_)
-			{
+			onComplete: function(_) {
 				FlxG.state.remove(text);
 				text.destroy();
 			}
@@ -613,8 +500,7 @@ class CoolUtil
 		return dumbArray;
 	}
 
-	public static function browserLoad(site:String)
-	{
+	public static function browserLoad(site:String) {
 		#if linux
 		Sys.command('/usr/bin/xdg-open', [site]);
 		#else
@@ -622,21 +508,16 @@ class CoolUtil
 		#end
 	}
 
-	public static function getNoteAmount(song:SwagSong, ?bothSides:Bool = true, ?oppNotes:Bool = false):Int
-	{
+	public static function getNoteAmount(song:SwagSong, ?bothSides:Bool = true, ?oppNotes:Bool = false):Int {
 		var total:Int = 0;
-		for (section in song.notes)
-		{
-			if (bothSides)
-				total += section.sectionNotes.length;
+		for (section in song.notes) {
+			if (bothSides) total += section.sectionNotes.length;
 			else
 			{
 				for (songNotes in section.sectionNotes)
 				{
-					if (!oppNotes && (songNotes[1] < 4 ? section.mustHitSection : !section.mustHitSection))
-						total += 1;
-					if (oppNotes && (songNotes[1] < 4 ? !section.mustHitSection : section.mustHitSection))
-						total += 1;
+					if (!oppNotes && (songNotes[1] < 4 ? section.mustHitSection : !section.mustHitSection)) total += 1;
+					if (oppNotes && (songNotes[1] < 4 ? !section.mustHitSection : section.mustHitSection)) total += 1;
 				}
 			}
 		}
@@ -649,15 +530,14 @@ class CoolUtil
 		@BeastlyGabi
 	**/
 	@:access(flixel.util.FlxSave.validate)
-	inline public static function getSavePath():String
-	{
+	inline public static function getSavePath():String {
 		final company:String = FlxG.stage.application.meta.get('company');
 		return '$company/${flixel.util.FlxSave.validate(FlxG.stage.application.meta.get('file'))}';
 	}
 
 	public static function setTextBorderFromString(text:FlxText, border:String)
 	{
-		switch (border.toLowerCase().trim())
+		switch(border.toLowerCase().trim())
 		{
 			case 'shadow':
 				text.borderStyle = SHADOW;

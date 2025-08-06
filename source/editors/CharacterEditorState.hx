@@ -1,7 +1,17 @@
 package editors;
 
-import Character;
+import flixel.FlxG;
+import flixel.FlxObject;
+import flixel.FlxSprite;
 import flixel.FlxState;
+import flixel.FlxCamera;
+import flixel.input.keyboard.FlxKey;
+import flixel.addons.display.FlxGridOverlay;
+import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.graphics.FlxGraphic;
+import flixel.graphics.frames.FlxAtlasFrames;
+import flixel.text.FlxText;
+import flixel.util.FlxColor;
 import flixel.addons.ui.FlxInputText;
 import flixel.addons.ui.FlxUI9SliceSprite;
 import flixel.addons.ui.FlxUI;
@@ -11,20 +21,22 @@ import flixel.addons.ui.FlxUINumericStepper;
 import flixel.addons.ui.FlxUISlider;
 import flixel.addons.ui.FlxUITabMenu;
 import flixel.addons.ui.FlxUITooltip.FlxUITooltipStyle;
-import flixel.animation.FlxAnimation;
-import flixel.graphics.FlxGraphic;
-import flixel.input.keyboard.FlxKey;
-import flixel.system.debug.interaction.tools.Pointer.GraphicCursorCross;
 import flixel.ui.FlxButton;
 import flixel.ui.FlxSpriteButton;
-import lime.system.Clipboard;
+import openfl.net.FileReference;
 import openfl.events.Event;
 import openfl.events.IOErrorEvent;
-import openfl.net.FileReference;
+import haxe.Json;
+import Character;
+import flixel.system.debug.interaction.tools.Pointer.GraphicCursorCross;
+import lime.system.Clipboard;
+import flixel.animation.FlxAnimation;
 
 #if MODS_ALLOWED
+import sys.FileSystem;
 #end
 
+using StringTools;
 
 /**
 	*DEBUG MODE
@@ -84,7 +96,7 @@ class CharacterEditorState extends MusicBeatState
 	var healthBarBG:FlxSprite;
 
 	override function create()
-	{
+	{	
 		music = new EditingMusic();
 
 		camEditor = initPsychCamera();
@@ -468,7 +480,7 @@ class CharacterEditorState extends MusicBeatState
 
 					if(animateGhost == null || animateGhostImage != char.imageFile)
 						Paths.loadAnimateAtlas(animateGhost, char.imageFile);
-
+					
 					if(myAnim.indices != null && myAnim.indices.length > 0)
 						animateGhost.anim.addBySymbolIndices('anim', myAnim.name, myAnim.indices, 0, false);
 					else
@@ -479,7 +491,7 @@ class CharacterEditorState extends MusicBeatState
 
 					animateGhostImage = char.imageFile;
 				}
-
+				
 				var spr:FlxSprite = !char.isAnimateAtlas ? ghostChar : animateGhost;
 				if(spr != null)
 				{
@@ -531,10 +543,6 @@ class CharacterEditorState extends MusicBeatState
 		//tab_group.add(hideGhostButton);
 		tab_group.add(highlightGhost);
 		tab_group.add(ghostAlphaSlider);
-
-		for (i in tab_group.members)
-			i.cameras = [camMenu];
-		
 		UI_box.addGroup(tab_group);
 	}
 
@@ -565,7 +573,6 @@ class CharacterEditorState extends MusicBeatState
 		});
 		charDropDown.selectedLabel = _char;
 		reloadCharacterDropDown();
-  		charDropDown.header.cameras = [camMenu]; //haxe is stupid, i have to set the header manually or it renders behind the menu
 
 		var reloadCharacter:FlxButton = new FlxButton(140, 20, "Reload Char", function()
 		{
@@ -625,10 +632,6 @@ class CharacterEditorState extends MusicBeatState
 		tab_group.add(charDropDown);
 		tab_group.add(reloadCharacter);
 		tab_group.add(templateCharacter);
-
-		for (i in tab_group.members)
-			i.cameras = [camMenu];
-
 		UI_box.addGroup(tab_group);
 	}
 
@@ -672,7 +675,7 @@ class CharacterEditorState extends MusicBeatState
 		var reloadImage:FlxButton = new FlxButton(imageInputText.x + 210, imageInputText.y - 3, "Reload Image", function()
 		{
 			if (sys.FileSystem.exists(Paths.modsImages(imageInputText.text)) || sys.FileSystem.exists('assets/shared/images/' + imageInputText.text))
-			{
+			{ 
 				char.imageFile = imageInputText.text;
 				reloadCharacterImage();
 				if(char.animation.curAnim != null) {
@@ -785,7 +788,6 @@ class CharacterEditorState extends MusicBeatState
 			if (barToUse == 3) healthBarBG.color = FlxColor.fromRGB(char.winningColorArray[0], char.winningColorArray[1], char.winningColorArray[2]);
 		});
 		barShowDropDown.selectedLabel = 'Normal';
-		barShowDropDown.header.cameras = [camMenu];
 
 		tab_group.add(new FlxText(15, saveCharacterButton.y + 110, 0, 'Noteskin:'));
 		noteskinText = new FlxUIInputText(15, saveCharacterButton.y + 128, 200, '', 8);
@@ -828,10 +830,6 @@ class CharacterEditorState extends MusicBeatState
 		tab_group.add(losingColorStepperG);
 		tab_group.add(losingColorStepperB);
 		tab_group.add(saveCharacterButton);
-
-		for (i in tab_group.members)
-			i.cameras = [camMenu];
-
 		UI_characterbox.addGroup(tab_group);
 	}
 
@@ -884,9 +882,6 @@ class CharacterEditorState extends MusicBeatState
 		tab_group.add(new FlxText(shakeIntensityStepper.x, shakeIntensityStepper.y - 18, 0, 'Shake Intensity:'));
 		tab_group.add(new FlxText(shakeDurationStepper.x, shakeDurationStepper.y - 18, 0, 'Shake Duration:'));
 
-		for (i in tab_group.members)
-			i.cameras = [camMenu];
-
 		UI_characterbox.addGroup(tab_group);
 	}
 
@@ -920,7 +915,6 @@ class CharacterEditorState extends MusicBeatState
 			var indicesStr:String = anim.indices.toString();
 			animationIndicesInputText.text = indicesStr.substr(1, indicesStr.length - 2);
 		});
-		animationDropDown.header.cameras = [camMenu];
 
 		var addUpdateButton:FlxButton = new FlxButton(70, animationIndicesInputText.y + 30, "Add/Update", function() {
 			var indices:Array<Int> = [];
@@ -1006,10 +1000,6 @@ class CharacterEditorState extends MusicBeatState
 		tab_group.add(addUpdateButton);
 		tab_group.add(removeButton);
 		tab_group.add(animationDropDown);
-
-		for (i in tab_group.members)
-			i.cameras = [camMenu];
-
 		UI_characterbox.addGroup(tab_group);
 	}
 
@@ -1157,7 +1147,7 @@ class CharacterEditorState extends MusicBeatState
 		{
 			var split:Array<String> = char.imageFile.split(',');
 			var charFrames:FlxAtlasFrames = Paths.getAtlas(split[0].trim());
-
+			
 			if(split.length > 1)
 			{
 				var original:FlxAtlasFrames = charFrames;
@@ -1367,7 +1357,7 @@ class CharacterEditorState extends MusicBeatState
 			winningColorStepperR.value = char.winningColorArray[0];
 			winningColorStepperG.value = char.winningColorArray[1];
 			winningColorStepperB.value = char.winningColorArray[2];
-		}
+		} 
 		else
 		{
 			winningColorStepperR.value = char.healthColorArray[0];
@@ -1563,7 +1553,7 @@ class CharacterEditorState extends MusicBeatState
 						var isLeft = false;
 						if((holdingFrameTime > 0.5 && FlxG.keys.pressed.A) || FlxG.keys.justPressed.A) isLeft = true;
 						char.animPaused = true;
-
+		
 						if(holdingFrameTime <= 0.5 || holdingFrameElapsed > 0.1)
 						{
 							frames = FlxMath.wrap(frames + Std.int(isLeft ? -shiftMult : shiftMult), 0, length-1);
@@ -1572,7 +1562,7 @@ class CharacterEditorState extends MusicBeatState
 							holdingFrameElapsed -= 0.1;
 						}
 					}
-
+		
 					txt = 'Frames: ( $frames / ${length-1} )';
 					//if(character.animation.curAnim.paused) txt += ' - PAUSED';
 					clr = FlxColor.WHITE;

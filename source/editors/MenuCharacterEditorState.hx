@@ -1,6 +1,14 @@
 package editors;
 
-import MenuCharacter;
+import flixel.FlxG;
+import flixel.FlxSprite;
+import flixel.addons.display.FlxGridOverlay;
+import flixel.addons.transition.FlxTransitionableState;
+import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.math.FlxMath;
+import flixel.text.FlxText;
+import flixel.util.FlxColor;
+import flixel.sound.FlxSound;
 import flixel.addons.ui.FlxInputText;
 import flixel.addons.ui.FlxUI9SliceSprite;
 import flixel.addons.ui.FlxUI;
@@ -9,13 +17,17 @@ import flixel.addons.ui.FlxUIInputText;
 import flixel.addons.ui.FlxUINumericStepper;
 import flixel.addons.ui.FlxUITabMenu;
 import flixel.ui.FlxButton;
+import MenuCharacter;
+import openfl.net.FileReference;
 import openfl.events.Event;
 import openfl.events.IOErrorEvent;
-import openfl.net.FileReference;
-
+import flash.net.FileFilter;
+import haxe.Json;
 #if sys
+import sys.io.File;
 #end
 
+using StringTools;
 
 class MenuCharacterEditorState extends MusicBeatState
 {
@@ -154,7 +166,7 @@ class MenuCharacterEditorState extends MusicBeatState
 	function addCharacterUI() {
 		var tab_group = new FlxUI(null, UI_mainbox);
 		tab_group.name = "Character";
-
+		
 		imageInputText = new FlxUIInputText(10, 20, 80, characterFile.image, 8);
 		blockPressWhileTypingOn.push(imageInputText);
 		imageInputText.focusGained = () -> FlxG.stage.window.textInputEnabled = true;
@@ -175,7 +187,7 @@ class MenuCharacterEditorState extends MusicBeatState
 		var reloadImageButton:FlxButton = new FlxButton(140, confirmInputText.y + 30, "Reload Char", function() {
 			reloadSelectedCharacter();
 		});
-
+		
 		scaleStepper = new FlxUINumericStepper(140, imageInputText.y, 0.05, 1, 0.1, 30, 2);
 
 		var confirmDescText = new FlxText(10, confirmInputText.y - 18, 0, 'Start Press animation on the .XML:');
@@ -218,7 +230,7 @@ class MenuCharacterEditorState extends MusicBeatState
 		}
 		reloadSelectedCharacter();
 	}
-
+	
 	function reloadSelectedCharacter() {
 		var char:MenuCharacter = grpWeekCharacters.members[curTypeSelected];
 
@@ -232,7 +244,7 @@ class MenuCharacterEditorState extends MusicBeatState
 		char.updateHitbox();
 		char.animation.play('idle');
 		updateOffset();
-
+		
 		#if desktop
 		// Updating Discord Rich Presence
 		DiscordClient.changePresence("Menu Character Editor", "Editting: " + characterFile.image);

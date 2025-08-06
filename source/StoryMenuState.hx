@@ -1,9 +1,22 @@
 package;
 
-import WeekData;
-import flixel.graphics.FlxGraphic;
+import flixel.FlxG;
+import flixel.FlxSprite;
+import flixel.FlxSubState;
+import flixel.addons.transition.FlxTransitionableState;
+import flixel.graphics.frames.FlxAtlasFrames;
+import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.group.FlxGroup;
+import flixel.math.FlxMath;
+import flixel.text.FlxText;
+import flixel.tweens.FlxTween;
+import flixel.util.FlxColor;
+import flixel.util.FlxTimer;
 import lime.net.curl.CURLCode;
+import flixel.graphics.FlxGraphic;
+import WeekData;
+
+using StringTools;
 
 class StoryMenuState extends MusicBeatState
 {
@@ -143,7 +156,7 @@ class StoryMenuState extends MusicBeatState
 			lastDifficultyName = CoolUtil.defaultDifficulty;
 		}
 		curDifficulty = Math.round(Math.max(0, CoolUtil.defaultDifficulties.indexOf(lastDifficultyName)));
-
+		
 		sprDifficulty = new FlxSprite(0, leftArrow.y);
 		sprDifficulty.antialiasing = ClientPrefs.globalAntialiasing;
 		difficultySelectors.add(sprDifficulty);
@@ -431,7 +444,7 @@ class StoryMenuState extends MusicBeatState
 				CoolUtil.difficulties = diffs;
 			}
 		}
-
+		
 		if(CoolUtil.difficulties.contains(CoolUtil.defaultDifficulty))
 		{
 			curDifficulty = Math.round(Math.max(0, CoolUtil.defaultDifficulties.indexOf(CoolUtil.defaultDifficulty)));
@@ -442,7 +455,7 @@ class StoryMenuState extends MusicBeatState
 		}
 
 		var hasJSRecharts:Bool = true;
-
+		
 		for (song in WeekData.getCurrentWeek().songs)
 			if (!Song.hasDifficulty(song[0].toLowerCase(), 'jshard'))
 			{ hasJSRecharts = false; break; }

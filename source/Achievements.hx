@@ -1,13 +1,26 @@
+import flixel.FlxG;
+import flixel.FlxSprite;
 import flixel.FlxCamera;
+import flixel.tweens.FlxTween;
+import flixel.group.FlxSpriteGroup;
+import flixel.util.FlxColor;
+import flixel.text.FlxText;
+
+#if MODS_ALLOWED
+import sys.io.File;
+import sys.FileSystem;
+#end
 
 #if ACHIEVEMENTS_ALLOWED
-import haxe.Exception;
 import objects.AchievementPopup;
+import haxe.Exception;
+import haxe.Json;
 
 #if LUA_ALLOWED
 import FunkinLua;
 #end
 
+using StringTools;
 
 typedef Achievement =
 {
@@ -19,7 +32,7 @@ typedef Achievement =
 
 	//handled automatically, ignore these two
 	@:optional var mod:String;
-	@:optional var ID:Int;
+	@:optional var ID:Int; 
 }
 
 class Achievements {
@@ -42,7 +55,7 @@ class Achievements {
 		createAchievement('two_keys',				{name: "Just the Two of Us", description: "Finish a Song pressing only two keys."});
 		createAchievement('toastier',				{name: "Toaster Gamer", description: "Have you tried to run the game on a toaster?"});
 		createAchievement('debugger',				{name: "Debugger", description: "Beat the \"Test\" Stage from the Chart Editor.", hidden: true});
-
+		
 		//dont delete this thing below
 		_originalLength = _sortID + 1;
 	}
@@ -126,7 +139,7 @@ class Achievements {
 		}
 		return -1;
 	}
-
+	
 	static var _lastUnlock:Int = -999;
 	public static function unlock(name:String, autoStartPopup:Bool = true):String {
 		if(!achievements.exists(name))
@@ -217,7 +230,7 @@ class Achievements {
 			try {
 				var rawJson:String = File.getContent(path).trim();
 				if(rawJson != null && rawJson.length > 0) retVal = Json.parse(rawJson); //Json.parse('{"achievements": $rawJson}').achievements;
-
+				
 				if(addMods && retVal != null)
 				{
 					for (i in 0...retVal.length)

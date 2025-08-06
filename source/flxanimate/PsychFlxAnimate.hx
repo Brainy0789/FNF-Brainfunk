@@ -1,9 +1,12 @@
 package flxanimate;
 
+import flixel.util.FlxDestroyUtil;
 import flixel.system.FlxAssets.FlxGraphicAsset;
-import flxanimate.FlxAnimate as OriginalFlxAnimate;
-import flxanimate.data.AnimationData;
 import flxanimate.frames.FlxAnimateFrames;
+import flxanimate.data.AnimationData;
+import flxanimate.FlxAnimate as OriginalFlxAnimate;
+
+using StringTools;
 
 class PsychFlxAnimate extends OriginalFlxAnimate
 {

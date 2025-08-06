@@ -1,6 +1,9 @@
 package editors;
 //We gotta have music in the Editors!
 
+import flixel.sound.FlxSound;
+import flixel.FlxG;
+import flixel.util.FlxTimer;
 
 class EditingMusic extends flixel.FlxBasic
 {

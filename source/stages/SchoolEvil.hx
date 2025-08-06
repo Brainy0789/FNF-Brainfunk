@@ -1,9 +1,10 @@
 package stages;
 
-import DialogueBox;
-import GameOverSubstate;
 import flixel.addons.effects.FlxTrail;
 import stages.objects.*;
+import GameOverSubstate;
+import DialogueBox;
+import openfl.utils.Assets as OpenFlAssets;
 
 class SchoolEvil extends BaseStage
 {
@@ -14,7 +15,7 @@ class SchoolEvil extends BaseStage
 		GameOverSubstate.loopSoundName = 'gameOver-pixel';
 		GameOverSubstate.endSoundName = 'gameOverEnd-pixel';
 		GameOverSubstate.characterName = 'bf-pixel-dead';
-
+		
 		var posX = 400;
 		var posY = 200;
 
@@ -101,7 +102,7 @@ class SchoolEvil extends BaseStage
 		doof.nextDialogueThing = PlayState.instance.startNextDialogue;
 		doof.skipDialogueThing = PlayState.instance.skipDialogue;
 	}
-
+	
 	function schoolIntro():Void
 	{
 		inCutscene = true;

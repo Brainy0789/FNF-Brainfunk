@@ -1,6 +1,9 @@
 package;
 
 import haxe.zip.Entry;
+import sys.io.File;
+
+using StringTools;
 
 class JSEZip
 {

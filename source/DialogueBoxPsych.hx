@@ -1,12 +1,25 @@
 package;
 
-import Alphabet;
+import flixel.FlxG;
+import flixel.FlxSprite;
 import flixel.addons.text.FlxTypeText;
+import flixel.graphics.frames.FlxAtlasFrames;
+import flixel.group.FlxSpriteGroup;
 import flixel.input.FlxKeyManager;
+import flixel.text.FlxText;
+import flixel.util.FlxColor;
+import flixel.util.FlxTimer;
+import flixel.FlxSubState;
+import haxe.Json;
 import haxe.format.JsonParser;
-
+import Alphabet;
 #if sys
+import sys.FileSystem;
+import sys.io.File;
 #end
+import openfl.utils.Assets;
+
+using StringTools;
 
 typedef DialogueCharacterFile = {
 	var image:String;
@@ -95,7 +108,7 @@ class DialogueCharacter extends FlxSprite
 		var path:String = Paths.getPreloadPath(characterPath);
 		rawJson = Assets.getText(path);
 		#end
-
+		
 		jsonFile = cast Json.parse(rawJson);
 	}
 
@@ -170,7 +183,7 @@ class DialogueBoxPsych extends FlxSpriteGroup
 	var offsetPos:Float = -600;
 
 	var textBoxTypes:Array<String> = ['normal', 'angry'];
-
+	
 	var curCharacter:String = "";
 	//var charPositionList:Array<String> = ['left', 'center', 'right'];
 
@@ -182,7 +195,7 @@ class DialogueBoxPsych extends FlxSpriteGroup
 			FlxG.sound.playMusic(Paths.music(song), 0);
 			FlxG.sound.music.fadeIn(2, 0, 1);
 		}
-
+		
 		bgFade = new FlxSprite(-500, -500).makeGraphic(FlxG.width * 2, FlxG.height * 2, FlxColor.WHITE);
 		bgFade.scrollFactor.set();
 		bgFade.visible = true;
@@ -482,7 +495,7 @@ class DialogueBoxPsych extends FlxSpriteGroup
 		daText.text = curDialogue.text;
 		daText.sound = curDialogue.sound;
 		if(daText.sound == null || daText.sound.trim() == '') daText.sound = 'dialogue';
-
+		
 		daText.y = DEFAULT_TEXT_Y;
 		if(daText.rows > 2) daText.y -= LONG_TEXT_ADD;
 
@@ -523,7 +536,7 @@ class DialogueBoxPsych extends FlxSpriteGroup
 		} else {
 			box.offset.set(10, 0);
 		}
-
+		
 		if(!box.flipX) box.offset.y += 10;
 	}
 }

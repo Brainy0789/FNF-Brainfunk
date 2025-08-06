@@ -1,10 +1,18 @@
 package;
 
-import flixel.addons.display.FlxBackdrop;
+import flixel.FlxG;
+import flixel.FlxSprite;
+import flixel.FlxSubState;
+import flixel.text.FlxText;
+import flixel.util.FlxColor;
 import flixel.effects.FlxFlicker;
-import flixel.util.FlxAxes;
 import lime.app.Application;
+import flixel.addons.transition.FlxTransitionableState;
+import flixel.tweens.FlxTween;
+import flixel.util.FlxTimer;
+import flixel.addons.display.FlxBackdrop;
 import openfl.display.BlendMode;
+import flixel.util.FlxAxes;
 
 class OutdatedState extends MusicBeatState
 {
@@ -69,8 +77,7 @@ class OutdatedState extends MusicBeatState
 		if(!leftState) {
 			if (FlxG.keys.justPressed.ENTER) {
 				leftState = true;
-				#if windows
-				FlxG.switchState(UpdateState.new);
+				#if windows FlxG.switchState(UpdateState.new);
 				#else
 				CoolUtil.browserLoad("https://github.com/JordanSantiagoYT/FNF-JS-Engine/releases/latest");
 				#end

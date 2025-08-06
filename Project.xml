@@ -2,7 +2,7 @@
 <project>
 	<!-- _________________________ Application Settings _________________________ -->
 
-	<app title="Friday Night Funkin': JS Engine" file="JSEngine" packageName="com.JordanSantiago.JSengine" package="com.JordanSantiago.JSengine" main="Main" version="0.3.0" company="JordanSantiago" />
+	<app title="Friday Night Funkin': Dave and Bambi Brainfunk RESTORED" file="BrainfunkRESTORED" packageName="com.Brainy7890.BrainfunkRestored" package="com.Brainy7890.BrainfunkRestored" main="Main" version="0.3.0" company="Brainy7890" />
 	<app preloader="flixel.system.FlxPreloader" />
 
 	<!-- ____________________________ Window Settings ___________________________ -->
@@ -30,20 +30,17 @@
 	<classpath name="source" />
 
 	<!-- PSYCH ENGINE CUSTOMIZATION -->
-	<define name="MODS_ALLOWED" if="desktop || mobile" unless="web" />
 	<define name="LUA_ALLOWED" if="desktop || mobile" unless="web" />
 	<define name="ACHIEVEMENTS_ALLOWED" />
+	<define name="MODS_ALLOWED" />
 	<define name="APRIL_FOOLS" /> <!-- DELETE THIS TO REMOVE THE APRIL FOOLS START UP, WHICH ONLY HAPPENS ONLY ON APRIL 1st -->
-	<define name="VIDEOS_ALLOWED" if="desktop || mobile" unless="32bits || web"/>
-	<define name="PSYCH_WATERMARKS"/> <!-- DELETE THIS TO REMOVE WATERMARKS/DEV NAMES ON TITLE SCREEN -->
+	<!-- DELETE THIS TO REMOVE WATERMARKS/DEV NAMES ON TITLE SCREEN -->
 	<define name="DISCORD_ALLOWED" if="desktop || mobile" unless="web" />
 
 	<assets path="assets/preload" rename="assets" exclude="*.ogg" if="web"/>
 	<assets path="assets/preload" rename="assets" exclude="*.mp3" unless="web"/>
-	<assets path='art/debugThingyMajiggy.bat' rename='Open me to use the debug terminal.bat' />
 
 	<!-- DONT ENABLE THIS!! shut up shadowmario ill enable whatever i want-->
-	<define name="CHECK_FOR_UPDATES" />
 
 	<define name="PRELOAD_ALL" unless="web" />
 	<define name="NO_PRELOAD_ALL" unless="PRELOAD_ALL"/>
@@ -119,7 +116,7 @@
 
 	<haxelib name="lime" />
 	<haxelib name="flixel" />
-	<haxelib name="flixel-ui" version="2.6.0" />
+	<haxelib name="flixel-ui" version="2.6.1" />
 	<haxelib name="flixel-addons" version="3.2.3" />
 	<haxelib name="away3d" />
 
@@ -130,7 +127,7 @@
 	<haxelib name="tjson" />
 	<!--<haxelib name="hxCodec" if="VIDEOS_ALLOWED"/>-->
 
-	<haxelib name="hxvlc" if="VIDEOS_ALLOWED"/>
+	<haxelib name="hxvlc" if="VIDEOS_ALLOWED" version="1.9.2"/>
 
 	<haxelib name="hxdiscord_rpc" if="DISCORD_ALLOWED" />
 	<haxelib name="flxanimate"/>

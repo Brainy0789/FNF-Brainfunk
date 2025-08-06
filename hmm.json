@@ -34,7 +34,7 @@
     {
       "name": "flixel-ui",
       "type": "haxelib",
-      "version": "2.6.0"
+      "version": "2.6.1"
     },
     {
       "name": "hxcpp",
@@ -45,10 +45,8 @@
     },
     {
       "name": "hxvlc",
-      "type": "git",
-      "dir": null,
-      "ref": null,
-      "url": "https://github.com/th2l-devs/hxvlc"
+      "type": "haxelib",
+      "version": "1.9.2"
     },
     {
       "name": "hscript",
@@ -92,7 +90,7 @@
       "name": "grig.audio",
       "type": "git",
       "dir": null,
-      "ref": "main",
+      "ref": "cbf91e2180fd2e374924fe74844086aab7891666",
       "url": "https://gitlab.com/haxe-grig/grig.audio.git"
     },
     {

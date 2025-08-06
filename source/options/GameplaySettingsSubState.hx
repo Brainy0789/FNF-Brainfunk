@@ -1,8 +1,28 @@
 package options;
 
-import Controls;
-import flixel.graphics.FlxGraphic;
+import flash.text.TextField;
+import flixel.FlxG;
+import flixel.FlxSprite;
+import flixel.addons.display.FlxGridOverlay;
+import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.math.FlxMath;
+import flixel.text.FlxText;
+import flixel.util.FlxColor;
+import lime.utils.Assets;
+import flixel.FlxSubState;
+import flash.text.TextField;
+import flixel.FlxG;
+import flixel.FlxSprite;
+import flixel.util.FlxSave;
+import haxe.Json;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
+import flixel.util.FlxTimer;
 import flixel.input.keyboard.FlxKey;
+import flixel.graphics.FlxGraphic;
+import Controls;
+
+using StringTools;
 
 class GameplaySettingsSubState extends BaseOptionsMenu
 {
@@ -211,7 +231,7 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		if (ClientPrefs.safeFrames > 10) option.displayFormat = '%v (Will not save)';
 		option.changeValue = 0.1;
 		addOption(option);
-
+		
 		var option:Option = new Option('Voiid-Styled Troll Mode',
 			"If checked, Troll Mode's speed change will behave like in Voiid Chronicles 1.5/2.0",
 			'voiidTrollMode',

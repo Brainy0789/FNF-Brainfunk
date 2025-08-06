@@ -1,22 +1,27 @@
 {
-	"songs": [
-		["Pico", "pico", [148, 22, 83]],
-		["Philly Nice", "pico", [148, 22, 83]],
-		["Blammed", "pico", [148, 22, 83]]
-	],
-
-	"weekCharacters": [
-		"pico",
-		"bf",
-		"gf"
-	],
-	"weekBackground": "philly",
-
-	"storyName": "PICO",
-	"weekBefore": "week2",
-	"weekName": "Week 3",
+	"storyName": "chapter 3: The showdown",
+	"difficulties": "finale",
+	"hideFreeplay": false,
+	"weekBackground": "splitathon",
+	"weekBefore": "tutorial",
 	"startUnlocked": true,
-
+	"weekCharacters": [
+		"",
+		"",
+		""
+	],
 	"hideStoryMode": false,
-	"hideFreeplay": false
+	"songs": [
+		[
+			"Brainathon",
+			"the-trio",
+			[
+				0,
+				133,
+				173
+			]
+		]
+	],
+	"hiddenUntilUnlocked": false,
+	"weekName": "Finale"
 }

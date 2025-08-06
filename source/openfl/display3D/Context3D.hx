@@ -1,5 +1,6 @@
 package openfl.display3D;
 
+#if !flash
 import openfl.display3D.utils.UInt8Buff;
 import openfl.display3D._internal.Context3DState;
 import openfl.display3D._internal.GLBuffer;
@@ -2673,3 +2674,6 @@ import lime.math.Vector2;
 		return 0;
 	}
 }
+#else
+typedef Context3D = flash.display3D.Context3D;
+#end

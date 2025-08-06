@@ -6,16 +6,34 @@ import Shaders;
 import Type.ValueType;
 import animateatlas.AtlasFrameMaker;
 import flixel.FlxBasic;
+import flixel.FlxCamera;
+import flixel.FlxG;
+import flixel.FlxObject;
+import flixel.FlxSprite;
+import flixel.FlxSprite;
 import flixel.addons.effects.FlxTrail;
+import flixel.addons.transition.FlxTransitionableState;
+import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.input.keyboard.FlxKey;
+import flixel.math.FlxMath;
+import flixel.math.FlxPoint;
+import flixel.sound.FlxSound;
 import flixel.system.FlxAssets.FlxShader;
+import flixel.text.FlxText;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
+import flixel.util.FlxColor;
+import flixel.util.FlxSave;
+import flixel.util.FlxTimer;
 import openfl.Lib;
 import openfl.display.BitmapData;
 import openfl.display.BlendMode;
 import openfl.filters.BitmapFilter;
 import openfl.filters.ShaderFilter;
+import openfl.utils.Assets;
 import utils.*;
 
+using StringTools;
 #if LUA_ALLOWED
 import llua.Convert;
 import llua.Lua;
@@ -23,12 +41,13 @@ import llua.LuaL;
 import llua.State;
 #end
 
-#if ( sys)
+#if (!flash && sys)
 import flixel.addons.display.FlxRuntimeShader;
-import shaders.ErrorHandledShader;
 #end
 
 #if sys
+import sys.FileSystem;
+import sys.io.File;
 #end
 
 #if hscript
@@ -47,7 +66,7 @@ class FunkinLua {
 	public static var Function_Continue:Dynamic = "##PSYCHLUA_FUNCTIONCONTINUE";
 	public static var Function_StopLua:Dynamic = "##PSYCHLUA_FUNCTIONSTOPLUA";
 
-	#if (MODS_ALLOWED && sys)
+	#if (!flash && MODS_ALLOWED && sys)
 	private static var storedFilters:Map<String, ShaderFilter> = []; // for a few shader functions
 	#end
 
@@ -259,7 +278,7 @@ class FunkinLua {
 		registerFunction("initLuaShader", function(name:String, glslVersion:Int = 120) {
 			if(!ClientPrefs.shaders) return false;
 
-			#if (MODS_ALLOWED && sys)
+			#if (!flash && MODS_ALLOWED && sys)
 			return initLuaShader(name, glslVersion);
 			#else
 			luaTrace("initLuaShader | Platform unsupported for Runtime Shaders!", false, false, FlxColor.RED);
@@ -270,7 +289,7 @@ class FunkinLua {
 		registerFunction("setSpriteShader", function(obj:String, shader:String) {
 			if(!ClientPrefs.shaders) return false;
 
-			#if (MODS_ALLOWED && sys)
+			#if (!flash && MODS_ALLOWED && sys)
 			if(!PlayState.instance.runtimeShaders.exists(shader) && !initLuaShader(shader))
 			{
 				luaTrace('setSpriteShader | Shader $shader is missing! Make sure you\'ve initalized your shader first!', false, false, FlxColor.RED);
@@ -285,7 +304,7 @@ class FunkinLua {
 
 			if(leObj != null) {
 				var arr:Array<String> = PlayState.instance.runtimeShaders.get(shader);
-				leObj.shader = new ErrorHandledRuntimeShader(shader, arr[0], arr[1]);
+				leObj.shader = new FlxRuntimeShader(arr[0], arr[1]);
 				return true;
 			}
 			#else
@@ -315,7 +334,7 @@ class FunkinLua {
 			if (index == null || index.length < 1)
 			    index = shader;
 
-			#if (MODS_ALLOWED && sys)
+			#if (!flash && MODS_ALLOWED && sys)
 			if (!funk.runtimeShaders.exists(shader) && !funk.initLuaShader(shader)) {
 			    luaTrace('addShaderToCam | Shader $shader is missing! Make sure you\'ve initalized your shader first!', false, false, FlxColor.RED);
 			    return false;
@@ -326,7 +345,7 @@ class FunkinLua {
             @:privateAccess {
             if (camera.filters == null)
                 camera.filters = [];
-				final filter = new ShaderFilter(new ErrorHandledRuntimeShader(shader, arr[0], arr[1]));
+				final filter = new ShaderFilter(new FlxRuntimeShader(arr[0], arr[1]));
 				storedFilters.set(index, filter);
 				camera.filters.push(filter);
             }
@@ -338,7 +357,7 @@ class FunkinLua {
 		});
 
 		registerFunction("removeCameraShader", function(cam:String, shader:String) {
-			#if (MODS_ALLOWED && sys)
+			#if (!flash && MODS_ALLOWED && sys)
 			final camera = getCam(cam);
 			@:privateAccess {
 			if(!storedFilters.exists(shader)) {
@@ -362,7 +381,7 @@ class FunkinLua {
 		});
 
 		registerFunction("getShaderBool", function(obj:String, prop:String) {
-			#if (MODS_ALLOWED && sys)
+			#if (!flash && MODS_ALLOWED && sys)
 			var shader:FlxRuntimeShader = getShader(obj);
 			if (shader == null)
 			{
@@ -375,7 +394,7 @@ class FunkinLua {
 			#end
 		});
 		registerFunction("getShaderBoolArray", function(obj:String, prop:String) {
-			#if (MODS_ALLOWED && sys)
+			#if (!flash && MODS_ALLOWED && sys)
 			var shader:FlxRuntimeShader = getShader(obj);
 			if (shader == null)
 			{
@@ -388,7 +407,7 @@ class FunkinLua {
 			#end
 		});
 		registerFunction("getShaderInt", function(obj:String, prop:String) {
-			#if (MODS_ALLOWED && sys)
+			#if (!flash && MODS_ALLOWED && sys)
 			var shader:FlxRuntimeShader = getShader(obj);
 			if (shader == null)
 			{
@@ -401,7 +420,7 @@ class FunkinLua {
 			#end
 		});
 		registerFunction("getShaderIntArray", function(obj:String, prop:String) {
-			#if (MODS_ALLOWED && sys)
+			#if (!flash && MODS_ALLOWED && sys)
 			var shader:FlxRuntimeShader = getShader(obj);
 			if (shader == null)
 			{
@@ -414,7 +433,7 @@ class FunkinLua {
 			#end
 		});
 		registerFunction("getShaderFloat", function(obj:String, prop:String) {
-			#if (MODS_ALLOWED && sys)
+			#if (!flash && MODS_ALLOWED && sys)
 			var shader:FlxRuntimeShader = getShader(obj);
 			if (shader == null)
 			{
@@ -427,7 +446,7 @@ class FunkinLua {
 			#end
 		});
 		registerFunction("getShaderFloatArray", function(obj:String, prop:String) {
-			#if (MODS_ALLOWED && sys)
+			#if (!flash && MODS_ALLOWED && sys)
 			var shader:FlxRuntimeShader = getShader(obj);
 			if (shader == null)
 			{
@@ -440,8 +459,9 @@ class FunkinLua {
 			#end
 		});
 
+
 		registerFunction("setShaderBool", function(obj:String, prop:String, value:Bool) {
-			#if (MODS_ALLOWED && sys)
+			#if (!flash && MODS_ALLOWED && sys)
 			var shader:FlxRuntimeShader = getShader(obj);
 			if(shader == null) return;
 
@@ -451,7 +471,7 @@ class FunkinLua {
 			#end
 		});
 		registerFunction("setShaderBoolArray", function(obj:String, prop:String, values:Dynamic) {
-			#if (MODS_ALLOWED && sys)
+			#if (!flash && MODS_ALLOWED && sys)
 			var shader:FlxRuntimeShader = getShader(obj);
 			if(shader == null) return;
 
@@ -461,7 +481,7 @@ class FunkinLua {
 			#end
 		});
 		registerFunction("setShaderInt", function(obj:String, prop:String, value:Int) {
-			#if (MODS_ALLOWED && sys)
+			#if (!flash && MODS_ALLOWED && sys)
 			var shader:FlxRuntimeShader = getShader(obj);
 			if(shader == null) return;
 
@@ -471,7 +491,7 @@ class FunkinLua {
 			#end
 		});
 		registerFunction("setShaderIntArray", function(obj:String, prop:String, values:Dynamic) {
-			#if (MODS_ALLOWED && sys)
+			#if (!flash && MODS_ALLOWED && sys)
 			var shader:FlxRuntimeShader = getShader(obj);
 			if(shader == null) return;
 
@@ -481,7 +501,7 @@ class FunkinLua {
 			#end
 		});
 		registerFunction("setShaderFloat", function(obj:String, prop:String, value:Float) {
-			#if (MODS_ALLOWED && sys)
+			#if (!flash && MODS_ALLOWED && sys)
 			var shader:FlxRuntimeShader = getShader(obj);
 			if(shader == null) return;
 
@@ -491,7 +511,7 @@ class FunkinLua {
 			#end
 		});
 		registerFunction("setShaderFloatArray", function(obj:String, prop:String, values:Dynamic) {
-			#if (MODS_ALLOWED && sys)
+			#if (!flash && MODS_ALLOWED && sys)
 			var shader:FlxRuntimeShader = getShader(obj);
 			if(shader == null) return;
 
@@ -502,7 +522,7 @@ class FunkinLua {
 		});
 
 		registerFunction("setShaderSampler2D", function(obj:String, prop:String, bitmapdataPath:String) {
-			#if (MODS_ALLOWED && sys)
+			#if (!flash && MODS_ALLOWED && sys)
 			var shader:FlxRuntimeShader = getShader(obj);
 			if(shader == null) return;
 
@@ -518,10 +538,13 @@ class FunkinLua {
 			#end
 		});
 
+
+		//
 		registerFunction("getRunningScripts", function(){
 			var runningScripts:Array<String> = [];
 			for (idx in 0...PlayState.instance.luaArray.length)
 				runningScripts.push(PlayState.instance.luaArray[idx].scriptName);
+
 
 			return runningScripts;
 		});
@@ -748,6 +771,7 @@ class FunkinLua {
 			return false;
 		});
 
+
 		registerFunction("addLuaScript", function(luaFile:String, ?ignoreAlreadyRunning:Bool = false) { //would be dope asf.
 			var cervix = luaFile + ".lua";
 			if(luaFile.endsWith(".lua"))cervix=luaFile;
@@ -947,6 +971,7 @@ class FunkinLua {
 			if(shitMyPants.length>1)
 				realObject = getPropertyLoopThingWhatever(shitMyPants, true, false);
 
+
 			if(Std.isOfType(realObject, FlxTypedGroup))
 			{
 				var result:Dynamic = getGroupStuff(realObject.members[index], variable);
@@ -1125,7 +1150,7 @@ class FunkinLua {
 		registerFunction("doTweenZoom", function(tag:String, vars:String, value:Dynamic, duration:Float, ease:String) {
 			var penisExam:Dynamic = tweenShit(tag, vars);
 			if(penisExam != null) {
-				if(vars == 'camHud' || vars == 'camGame' || vars == 'Hud' || vars == 'Game') {
+				if(vars == 'camHud' && vars == 'camGame' && vars == 'Hud' && vars == 'Game') {
 					PlayState.instance.modchartTweens.set(tag, FlxTween.tween(penisExam, {zoom: value}, duration / PlayState.instance.playbackRate, {ease: getFlxEaseByString(ease),
 						onComplete: function(twn:FlxTween) {
 							PlayState.instance.callOnLuas('onTweenCompleted', [tag]);
@@ -1835,6 +1860,7 @@ class FunkinLua {
 			return addAnimByIndices(obj, name, prefix, indices, framerate, true);
 		});
 
+
 		registerFunction("playAnim", function(obj:String, name:String, forced:Bool = false, ?reverse:Bool = false, ?startFrame:Int = 0)
 		{
 			if(PlayState.instance.getLuaObject(obj, false) != null) {
@@ -2357,6 +2383,7 @@ class FunkinLua {
 			DiscordClient.changePresence(details, state, smallImageKey, hasStartTimestamp, endTimestamp);
 			#end
 		});
+
 
 		// LUA TEXTS
 		registerFunction("makeLuaText", function(tag:String, text:String, width:Int, x:Float, y:Float) {
@@ -3026,7 +3053,7 @@ class FunkinLua {
 		return PlayState.instance.modchartTexts.exists(name) ? PlayState.instance.modchartTexts.get(name) : Reflect.getProperty(PlayState.instance, name);
 	}
 
-	#if ( sys)
+	#if (!flash && sys)
 	public function getShader(obj:String):FlxRuntimeShader
 	{
 		var killMe:Array<String> = obj.split('.');
@@ -3048,7 +3075,7 @@ class FunkinLua {
 	{
 		if(!ClientPrefs.shaders) return false;
 
-		#if ( sys)
+		#if (!flash && sys)
 		if(PlayState.instance.runtimeShaders.exists(name))
 		{
 			luaTrace('Shader $name was already initialized!');
@@ -3577,9 +3604,8 @@ class HScript
 		interp.variables.set('Character', Character);
 		interp.variables.set('Alphabet', Alphabet);
 		interp.variables.set('CustomSubstate', CustomSubstate);
-		#if ( sys)
+		#if (!flash && sys)
 		interp.variables.set('FlxRuntimeShader', FlxRuntimeShader);
-		interp.variables.set('ErrorHandledRuntimeShader', ErrorHandledRuntimeShader);
 		#end
 		interp.variables.set('ShaderFilter', ShaderFilter);
 		interp.variables.set('StringTools', StringTools);

@@ -1,9 +1,29 @@
 package;
 
+import flash.text.TextField;
+import flixel.FlxG;
+import flixel.FlxSprite;
+import flixel.addons.display.FlxGridOverlay;
+import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.math.FlxMath;
+import flixel.text.FlxText;
+import flixel.util.FlxColor;
+import lime.utils.Assets;
+import flixel.FlxSubState;
+import flash.text.TextField;
+import flixel.FlxG;
+import flixel.FlxSprite;
+import flixel.util.FlxSave;
+import haxe.Json;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
+import flixel.util.FlxTimer;
+import flixel.input.keyboard.FlxKey;
+import flixel.graphics.FlxGraphic;
 import Controls;
 import flixel.FlxState;
-import flixel.graphics.FlxGraphic;
-import flixel.input.keyboard.FlxKey;
+
+using StringTools;
 
 class GameplayChangersSubstate extends MusicBeatSubstate
 {
@@ -86,7 +106,7 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 
 		var option:GameplayOption = new GameplayOption('Botplay', 'botplay', 'bool', false);
 		optionsArray.push(option);
-		option.onChange = onChangeCheat;
+		option.onChange = onChangeCheat; 
 
 		var option:GameplayOption = new GameplayOption('Play as Opponent', 'opponentplay', 'bool', false);
 		option.onChange = onChangeChartOption;
@@ -119,7 +139,7 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 		var option:GameplayOption = new GameplayOption('Wave Mode', 'wavemode', 'bool', false);
 		option.onChange = onChangeChartOption;
 		optionsArray.push(option);
-
+	
 		var option:GameplayOption = new GameplayOption('Flip Mode', 'flip', 'bool', false);
 		option.onChange = onChangeChartOption;
 		optionsArray.push(option);
@@ -181,7 +201,7 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 	public function new(?pause:MusicBeatSubstate = null)
 	{
 		super();
-
+		
 		var bg:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
 		bg.alpha = 0.6;
 		add(bg);
@@ -195,7 +215,7 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 
 		checkboxGroup = new FlxTypedGroup<CheckboxThingie>();
 		add(checkboxGroup);
-
+		
 		getOptions();
 
 		for (i in 0...optionsArray.length)
@@ -320,7 +340,7 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 
 									curOption.curOption = num;
 									curOption.setValue(curOption.options[num]); //lol
-
+									
 									if (curOption.name == "Scroll Type")
 									{
 										var oOption:GameplayOption = getOptionByName("Scroll Speed");
@@ -348,12 +368,12 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 							holdValue += curOption.scrollSpeed * elapsed * curOption.getValue() * (controls.UI_LEFT ? -1 : 1);
 							if (holdValue < curOption.minValue) holdValue = curOption.minValue;
 							if (holdValue > curOption.maxValue) holdValue = curOption.maxValue;
-
+							
 							switch(curOption.type)
 							{
 								case 'int':
 									curOption.setValue(Math.round(holdValue));
-
+								
 								case 'float' | 'percent':
 									curOption.setValue(FlxMath.roundDecimal(holdValue, curOption.decimals));
 							}
@@ -467,7 +487,7 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 			PlayState.playerIsCheating = true;
 		}
 	}
-
+	
 	function changeSelection(change:Int = 0)
 	{
 		curSelected += change;
@@ -568,7 +588,7 @@ class GameplayOption
 				if(num > -1) {
 					curOption = num;
 				}
-
+	
 			case 'percent':
 				displayFormat = '%v%';
 				changeValue = 0.01;

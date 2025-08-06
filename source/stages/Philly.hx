@@ -1,7 +1,7 @@
 package stages;
 
-import Character;
 import stages.objects.*;
+import Character;
 
 class Philly extends BaseStage
 {
@@ -62,6 +62,7 @@ class Philly extends BaseStage
 				phillyWindowEvent.updateHitbox();
 				phillyWindowEvent.visible = false;
 				insert(members.indexOf(blammedLightsBlack) + 1, phillyWindowEvent);
+
 
 				phillyGlowGradient = new PhillyGlowGradient(-400, 225); //This shit was refusing to properly load FlxGradient so fuck it
 				phillyGlowGradient.visible = false;

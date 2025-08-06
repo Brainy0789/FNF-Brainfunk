@@ -1,8 +1,28 @@
 package options;
 
-import Controls;
-import flixel.graphics.FlxGraphic;
+import flash.text.TextField;
+import flixel.FlxG;
+import flixel.FlxSprite;
+import flixel.addons.display.FlxGridOverlay;
+import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.math.FlxMath;
+import flixel.text.FlxText;
+import flixel.util.FlxColor;
+import lime.utils.Assets;
+import flixel.FlxSubState;
+import flash.text.TextField;
+import flixel.FlxG;
+import flixel.FlxSprite;
+import flixel.util.FlxSave;
+import haxe.Json;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
+import flixel.util.FlxTimer;
 import flixel.input.keyboard.FlxKey;
+import flixel.graphics.FlxGraphic;
+import Controls;
+
+using StringTools;
 
 class ControlsSubState extends MusicBeatSubstate {
 	private static var curSelected:Int = 1;
@@ -174,7 +194,7 @@ class ControlsSubState extends MusicBeatSubstate {
 		}
 		return num;
 	}
-
+	
 	function changeSelection(change:Int = 0) {
 		do {
 			curSelected += change;

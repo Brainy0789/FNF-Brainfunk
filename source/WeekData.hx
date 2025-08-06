@@ -1,8 +1,12 @@
 package;
 
 #if MODS_ALLOWED
+import sys.FileSystem;
+import sys.io.File;
 #end
 import tjson.TJSON as Json;
+
+using StringTools;
 
 typedef WeekFile =
 {

@@ -6,6 +6,8 @@ package utils;
     Shoutout to him :D
 */
 
+import sys.io.File;
+import sys.io.Process;
 import haxe.io.Bytes;
 
 class CoolSystemStuff

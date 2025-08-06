@@ -1,22 +1,31 @@
 package animateatlas;
-import animateatlas.JSONData.AnimationData;
+import flixel.util.FlxDestroyUtil;
+import openfl.geom.Rectangle;
+import flixel.math.FlxPoint;
+import flixel.math.FlxRect;
+import openfl.Assets;
+import haxe.Json;
+import flixel.FlxG;
+import openfl.display.BitmapData;
 import animateatlas.JSONData.AtlasData;
+import animateatlas.JSONData.AnimationData;
 import animateatlas.displayobject.SpriteAnimationLibrary;
 import animateatlas.displayobject.SpriteMovieClip;
 import flixel.graphics.FlxGraphic;
-import flixel.graphics.frames.FlxFrame;
 import flixel.graphics.frames.FlxFramesCollection;
-import openfl.Assets;
-import openfl.display.BitmapData;
-import openfl.geom.Rectangle;
+import flixel.graphics.frames.FlxFrame;
+import flixel.util.FlxColor;
+import sys.FileSystem;
+import sys.io.File;
 
+using StringTools;
 class AtlasFrameMaker extends FlxFramesCollection
 {
 	//public static var widthoffset:Int = 0;
 	//public static var heightoffset:Int = 0;
 	//public static var excludeArray:Array<String>;
 	/**
-
+	
 	* Creates Frames from TextureAtlas(very early and broken ok) Originally made for FNF HD by Smokey and Rozebud
 	*
 	* @param   key                 The file path.
@@ -104,7 +113,7 @@ class AtlasFrameMaker extends FlxFramesCollection
 			}
 			else break;
 		}
-
+		
 		for (i in 0...bitMapArray.length)
 		{
 			var b = FlxGraphic.fromBitmapData(bitMapArray[i]);

@@ -7,11 +7,13 @@ import cpp.Function;
 import cpp.RawConstPointer;
 #end
 
+import sys.thread.Thread;
+import lime.app.Application;
+
 import hxdiscord_rpc.Discord;
 import hxdiscord_rpc.Types;
-import lime.app.Application;
-import sys.thread.Thread;
 
+import flixel.util.FlxStringUtil;
 
 class DiscordClient
 {
@@ -27,7 +29,7 @@ class DiscordClient
 		if(ClientPrefs.discordRPC) initialize();
 		else if(isInitialized) shutdown();
 	}
-
+	
 	public static function prepare()
 	{
 		if (!isInitialized && ClientPrefs.discordRPC)
@@ -43,7 +45,7 @@ class DiscordClient
 		isInitialized = false;
 		Discord.Shutdown();
 	}
-
+	
 	private static function onReady(request:RawConstPointer<DiscordUser>):Void
 	{
 		final user = cast (request[0].username, String);
@@ -127,7 +129,7 @@ class DiscordClient
 	{
 		Discord.UpdatePresence(RawConstPointer.addressOf(presence));
 	}
-
+	
 	inline public static function resetClientID()
 	{
 		clientID = _defaultID;

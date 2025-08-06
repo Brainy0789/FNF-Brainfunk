@@ -1,6 +1,10 @@
 package;
 
 import flixel.addons.display.FlxPieDial;
+import flixel.group.FlxSpriteGroup;
+import flixel.FlxSprite;
+import flixel.util.FlxColor;
+import flixel.math.FlxMath;
 #if hxvlc
 import hxvlc.flixel.FlxVideoSprite;
 #end
@@ -12,13 +16,12 @@ class VideoSprite extends FlxSpriteGroup {
 
 	final _timeToSkip:Float = 1;
 	public var holdingTime:Float = 0;
-	public var videoSprite:FunkinVideoSprite;
+	public var videoSprite:FlxVideoSprite;
 	public var skipSprite:FlxPieDial;
 	public var cover:FlxSprite;
 	public var canSkip(default, set):Bool = false;
 
 	private var videoName:String;
-	// private var autoPause:Bool = true;
 
 	public var waiting:Bool = false;
 
@@ -40,7 +43,7 @@ class VideoSprite extends FlxSpriteGroup {
 		}
 
 		// initialize sprites
-		videoSprite = new FunkinVideoSprite();
+		videoSprite = new FlxVideoSprite();
 		videoSprite.antialiasing = ClientPrefs.globalAntialiasing;
 		videoSprite.autoPause = autoPause;
 		add(videoSprite);
@@ -159,47 +162,4 @@ class VideoSprite extends FlxSpriteGroup {
 	public function resume() videoSprite?.resume();
 	public function pause() videoSprite?.pause();
 	#end
-}
-
-@:nullSafety
-class FunkinVideoSprite extends FlxVideoSprite
-{
-	public var autoPause:Bool = true; // literally to just fix one measily little issue
-	/*
-	@:noCompletion
-	override private function onFocusGained():Void
-	{
-		#if !mobile
-		if (!FlxG.autoPause)
-			return;
-		#end
-
-		if (resumeOnFocus)
-		{
-			resumeOnFocus = false;
-
-			resume();
-		}
-		super.onFocusGained();
-	}
-	*/
-
-	@:noCompletion
-	override function onFocusLost():Void
-	{
-		#if !mobile
-		if (!FlxG.autoPause)
-			return;
-		#end
-
-		if (autoPause)
-		{
-			resumeOnFocus = bitmap.isPlaying;
-			pause();
-		}
-		else
-			resumeOnFocus = false;
-
-		super.onFocusLost();
-	}
 }
